@@ -4,10 +4,10 @@ var express = require('express'),
     app     = express(),
     eps     = require('ejs'),
     morgan  = require('morgan');
-    
+
 Object.assign=require('object-assign')
 
-app.engine('html', require('ejs').renderFile);
+//app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
@@ -58,30 +58,31 @@ var initDb = function(callback) {
   });
 };
 
-app.get('/', function (req, res) {
-  // try to initialize the db on every request if it's not already
-  // initialized.
+app.get('*',function(req, res, next){
   if (!db) {
     initDb(function(err){});
   }
+  next();
+});
+
+app.get('/', function (req, res) {
   if (db) {
     var col = db.collection('counts');
     // Create a document with request IP and current time of request
     col.insert({ip: req.ip, date: Date.now()});
     col.count(function(err, count){
-      res.render('index.html', { pageCountMessage : count, dbInfo: dbDetails });
+      res.sendFile(__dirname+'/views/index.html');
     });
   } else {
-    res.render('index.html', { pageCountMessage : null});
+    res.sendFile(__dirname+'/views/index.html');
   }
 });
 
+app.get('/files/*', function(req, res){
+  res.sendFile(__dirname+req.url);
+});
+
 app.get('/pagecount', function (req, res) {
-  // try to initialize the db on every request if it's not already
-  // initialized.
-  if (!db) {
-    initDb(function(err){});
-  }
   if (db) {
     db.collection('counts').count(function(err, count ){
       res.send('{ pageCount: ' + count + '}');
