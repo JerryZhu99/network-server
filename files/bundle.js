@@ -40079,26 +40079,26 @@ function correct() {
   //keep width in bounds
   let visible_width = (renderer.width * map.scale.x) + map.x;
   if (visible_width < renderer.view.width) {
-    map.x = Math.min(0, renderer.view.width - (renderer.width * map.scale.x));
-    if (map.x == 0) {
-      map.scale.x = renderer.view.width / renderer.width;
-    }
-  }
+  map.x = Math.min(0, renderer.view.width - (renderer.width * map.scale.x));
+  if (map.x == 0) {
+  map.scale.x = renderer.view.width / renderer.width;
+}
+}
 
-  //keep height in bounds
-  let visible_height = (renderer.height * map.scale.y) + map.y;
-  if (visible_height < renderer.view.height) {
-    map.y = Math.min(0, renderer.view.height - (renderer.height * map.scale.y));
-    if (map.y == 0) {
-      map.scale.y = renderer.view.height / renderer.height;
-    }
-  }*/
+//keep height in bounds
+let visible_height = (renderer.height * map.scale.y) + map.y;
+if (visible_height < renderer.view.height) {
+map.y = Math.min(0, renderer.view.height - (renderer.height * map.scale.y));
+if (map.y == 0) {
+map.scale.y = renderer.view.height / renderer.height;
+}
+}*/
 
-  //keep aspect ratio
-  if (map.scale.y != map.scale.x) {
-    map.scale.x = Math.max(map.scale.x, map.scale.y);
-    map.scale.y = Math.max(map.scale.x, map.scale.y);
-  }
+//keep aspect ratio
+if (map.scale.y != map.scale.x) {
+  map.scale.x = Math.max(map.scale.x, map.scale.y);
+  map.scale.y = Math.max(map.scale.x, map.scale.y);
+}
 }
 
 //Tell the `renderer` to `render` the `stage`
@@ -40163,13 +40163,13 @@ function setup() {
   };
   keyF11.press = function(event){
     if (document.body.requestFullscreen) {
-    	document.body.requestFullscreen();
+      document.body.requestFullscreen();
     } else if (document.body.webkitRequestFullscreen) {
-    	document.body.webkitRequestFullscreen();
+      document.body.webkitRequestFullscreen();
     } else if (document.body.mozRequestFullScreen) {
-    	document.body.mozRequestFullScreen();
+      document.body.mozRequestFullScreen();
     } else if (document.body.msRequestFullscreen) {
-    	document.body.msRequestFullscreen();
+      document.body.msRequestFullscreen();
     }
     renderer.resize(window.innerWidth, window.innerHeight);
 
@@ -40181,20 +40181,21 @@ function setup() {
 
 function update() {
   __WEBPACK_IMPORTED_MODULE_1__time_js__["a" /* updateDelta */]();
-
-  let mouseLocation = renderer.plugins.interaction.eventData.data.global;
-  console.log(mouseLocation);
-  if(mouseLocation.x < BORDER){
-    map.x += map.scale.x * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * SCROLLSPEED;
-  }
-  if(mouseLocation.x > window.innerWidth - BORDER){
-    map.x -= map.scale.x * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * SCROLLSPEED;
-  }
-  if(mouseLocation.y < BORDER){
-    map.y += map.scale.y * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * SCROLLSPEED;
-  }
-  if(mouseLocation.y > window.innerHeight - BORDER){
-    map.y -= map.scale.y * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * SCROLLSPEED;
+  if(renderer.plugins.interaction.eventData.data){
+    let mouseLocation = renderer.plugins.interaction.eventData.data.global;
+    console.log(mouseLocation);
+    if(mouseLocation.x < BORDER){
+      map.x += map.scale.x * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * SCROLLSPEED;
+    }
+    if(mouseLocation.x > window.innerWidth - BORDER){
+      map.x -= map.scale.x * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * SCROLLSPEED;
+    }
+    if(mouseLocation.y < BORDER){
+      map.y += map.scale.y * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * SCROLLSPEED;
+    }
+    if(mouseLocation.y > window.innerHeight - BORDER){
+      map.y -= map.scale.y * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * SCROLLSPEED;
+    }
   }
   if(keyW.isDown){
     battleship.forward();
