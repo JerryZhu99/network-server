@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -39765,7 +39765,7 @@ global.PIXI = exports; // eslint-disable-line
 
 //# sourceMappingURL=pixi.js.map
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
 /* 1 */
@@ -39793,6 +39793,133 @@ function updateDelta(){
 
 /***/ }),
 /* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["c"] = dist;
+/* harmony export (immutable) */ __webpack_exports__["a"] = checkCollision;
+/* harmony export (immutable) */ __webpack_exports__["b"] = resolveCollision;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pixi_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__pixi_js__);
+
+
+function dist(a, b) {
+  return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+}
+/**
+ * 
+ * @param {*} a 
+ * @param {*} b 
+ * @param {function(boolean)} callback 
+ */
+function checkCollision(a, b, callback) {
+  return (dist(a, b) < a.size + b.size);
+}
+
+
+function resolveCollision(a, b) {
+  if (checkCollision(a,b)) {
+    var dx = a.x - b.x;
+    var dy = a.y - b.y;
+    var diff = (a.size + b.size) - dist(a, b);
+    var ratio = diff / dist(a, b);
+    a.x += dx * ratio / 2;
+    a.y += dy * ratio / 2;
+    b.x -= dx * ratio / 2;
+    b.y -= dy * ratio / 2;
+  }
+}
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+const BORDER = 10;
+/* harmony export (immutable) */ __webpack_exports__["c"] = BORDER;
+
+const SCROLLSPEED = 1000;
+/* harmony export (immutable) */ __webpack_exports__["d"] = SCROLLSPEED;
+
+const MINZOOM = 0.2;
+/* harmony export (immutable) */ __webpack_exports__["a"] = MINZOOM;
+
+const MAXZOOM = 1.5;
+/* harmony export (immutable) */ __webpack_exports__["b"] = MAXZOOM;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = init;
+/* harmony export (immutable) */ __webpack_exports__["b"] = update;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__settings_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__time_js__ = __webpack_require__(1);
+
+
+
+function init(renderer, map) {
+  document.addEventListener("wheel", function (event) {
+    let zoomIn = event.deltaY < 0; //simplified
+    let zoomFactor;
+    if (zoomIn) {
+      zoomFactor = 1.1;
+    } else {
+      zoomFactor = (1 / 1.1);
+    }
+    let original = map.scale.x;
+    //zoom
+    map.scale.x *= zoomFactor;
+    map.scale.y *= zoomFactor;
+    //restrict zoom
+    map.scale.x = Math.max(__WEBPACK_IMPORTED_MODULE_0__settings_js__["a" /* MINZOOM */], map.scale.x);
+    map.scale.x = Math.min(__WEBPACK_IMPORTED_MODULE_0__settings_js__["b" /* MAXZOOM */], map.scale.x);
+    map.scale.y = Math.max(__WEBPACK_IMPORTED_MODULE_0__settings_js__["a" /* MINZOOM */], map.scale.y);
+    map.scale.y = Math.min(__WEBPACK_IMPORTED_MODULE_0__settings_js__["b" /* MAXZOOM */], map.scale.y);
+
+    zoomFactor = map.scale.x/original;
+    //center on cursor
+    map.x -= (window.innerWidth/2 - map.x) * (zoomFactor - 1);
+    map.y -= (window.innerHeight/2 - map.y) * (zoomFactor - 1);
+
+    correct();
+
+    event.preventDefault();
+  }, false);
+
+  function correct() {
+    
+
+    //keep aspect ratio
+    if (map.scale.y != map.scale.x) {
+      map.scale.x = Math.max(map.scale.x, map.scale.y);
+      map.scale.y = Math.max(map.scale.x, map.scale.y);
+    }
+  }
+}
+function update(renderer, map) {
+  if (renderer.plugins.interaction.eventData.data) {
+    let mouseLocation = renderer.plugins.interaction.eventData.data.global;
+    if (mouseLocation.x < __WEBPACK_IMPORTED_MODULE_0__settings_js__["c" /* BORDER */]) {
+      map.x += map.scale.x * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * __WEBPACK_IMPORTED_MODULE_0__settings_js__["d" /* SCROLLSPEED */];
+    }
+    if (mouseLocation.x > window.innerWidth - __WEBPACK_IMPORTED_MODULE_0__settings_js__["c" /* BORDER */]) {
+      map.x -= map.scale.x * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * __WEBPACK_IMPORTED_MODULE_0__settings_js__["d" /* SCROLLSPEED */];
+    }
+    if (mouseLocation.y < __WEBPACK_IMPORTED_MODULE_0__settings_js__["c" /* BORDER */]) {
+      map.y += map.scale.y * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * __WEBPACK_IMPORTED_MODULE_0__settings_js__["d" /* SCROLLSPEED */];
+    }
+    if (mouseLocation.y > window.innerHeight - __WEBPACK_IMPORTED_MODULE_0__settings_js__["c" /* BORDER */]) {
+      map.y -= map.scale.y * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * __WEBPACK_IMPORTED_MODULE_0__settings_js__["d" /* SCROLLSPEED */];
+    }
+  }
+}
+
+/***/ }),
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -39840,136 +39967,168 @@ function key(keyCode) {
 
 
 /***/ }),
-/* 3 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pixi_js__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__pixi_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mathutils_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mathutils_js__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__time_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__healthbar_js__ = __webpack_require__(9);
 
 
 
 
-class Ship extends PIXI.Sprite {
-  constructor(texture){
-    super(texture);
-    this.anchor.x = 0.5;
-    this.anchor.y = 0.5;
-    this.rotation = 0;
-    this.angularVelocity = 0;
-    this.turnRate = 1;
-    this.acceleration = 25;
-    this.velocity = 0;
-    this.maxVelocity = 100;
-    this.minVelocity = -25;
+
+class Ship extends PIXI.Container {
+  constructor(texture) {
+    super();
+    this.sprite = new PIXI.Sprite(texture);
+    this.addChild(this.sprite);
+    this.sprite.anchor.x = 0.5;
+    this.sprite.anchor.y = 0.5;
+    this.size = 120.0; // radius
+    this.angle = 0.0;
+    this.angularVelocity = 0.0;
+    this.turnRate = 1.0;
+    this.acceleration = 25.0;
+    this.velocity = 0.0;
+    this.maxVelocity = 100.0;
+    this.minVelocity = -25.0;
     this.dest = new PIXI.Point();
     this.hasDest = false;
     this.cruise = false;
     this.cruiseStarting = false;
+    this.maxhealth = 1000.0;
+    this.health = 1000.0;
+    this.ramDamage = 50.0;
+    this.weapons = [];
+    this.target = null;
+    this.healthBar = new __WEBPACK_IMPORTED_MODULE_3__healthbar_js__["a" /* HealthBar */](this);
+    this.addChild(this.healthBar);
   }
 
-  move(x,y){
+  move(x, y) {
     this.hasDest = true;
-    if(!y){
+    if (!y) {
       this.dest = x;
       return;
     }
-    this.dest.x=x;
-    this.dest.y=y;
+    this.dest.x = x;
+    this.dest.y = y;
   }
-  toggleCruise(){
+  toggleCruise() {
     this.braking = false;
     this.cruise = !this.cruise;
     this.cruiseStarting = this.cruise;
     this.checkVelocity();
   }
-  forward(){
-    if(this.cruiseStarting){
+  forward() {
+    if (this.cruiseStarting) {
       return;
     }
     this.braking = false;
-    this.velocity += (this.cruise?this.acceleration*2:this.acceleration) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
+    this.velocity += (this.cruise ? this.acceleration * 2 : this.acceleration) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
     this.checkVelocity();
   }
-  reverse(){
-    if(this.cruiseStarting){
+  reverse() {
+    if (this.cruiseStarting) {
       this.cruiseStarting = false;
     }
     this.braking = false;
     this.velocity -= this.acceleration * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
     this.checkVelocity();
   }
-  stop(){
-    if(this.cruiseStarting){
+  stop() {
+    if (this.cruiseStarting) {
       this.cruiseStarting = false;
     }
     this.angularVelocity = 0;
     this.braking = true;
   }
-  brake(){
-    if(Math.abs(this.velocity) <= this.acceleration * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */]){
+  brake() {
+    if (Math.abs(this.velocity) <= this.acceleration * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */]) {
       this.velocity = 0;
       this.braking = false;
-    }else if(this.velocity > 0){
+    } else if (this.velocity > 0) {
       this.velocity -= this.acceleration * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
-    }else{
+    } else {
       this.velocity += this.acceleration * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
     }
     this.checkVelocity();
   }
-  checkVelocity(){
-    this.velocity = Math.min(this.cruise?this.maxVelocity*2:this.maxVelocity, this.velocity);
-    this.velocity = Math.max(this.cruise?this.minVelocity*2:this.minVelocity, this.velocity);
+  checkVelocity() {
+    this.velocity = Math.min(this.cruise ? this.maxVelocity * 2 : this.maxVelocity, this.velocity);
+    this.velocity = Math.max(this.cruise ? this.minVelocity * 2 : this.minVelocity, this.velocity);
   }
-  rotateLeft(){
+  rotateLeft() {
     this.hasDest = false;
     this.angularVelocity = -this.turnRate;
   }
-  rotateRight(){
+  rotateRight() {
     this.hasDest = false;
     this.angularVelocity = this.turnRate;
   }
-  stopRotation(){
+  stopRotation() {
     this.angularVelocity = 0;
   }
-  strafeLeft(){
-    this.x += this.velocity * Math.cos(this.rotation - Math.PI) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
-    this.y += this.velocity * Math.sin(this.rotation - Math.PI) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
+  strafeLeft() {
+    this.x += this.velocity * Math.cos(this.angle - Math.PI) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
+    this.y += this.velocity * Math.sin(this.angle - Math.PI) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
   }
-  strafeRight(){
-    this.x += this.velocity * Math.cos(this.rotation) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
-    this.y += this.velocity * Math.sin(this.rotation) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
+  strafeRight() {
+    this.x += this.velocity * Math.cos(this.angle) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
+    this.y += this.velocity * Math.sin(this.angle) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
   }
-  update(){
-    if(this.cruiseStarting){
+  fireAt(ship) {
+    this.target = ship;
+  }
+  takeDamage(amount){
+    this.cruise = false;
+    this.cruiseStarting = false;
+    this.health -= amount;
+    if(this.health < 0){
+      this.kill();
+    }
+  }
+  kill(){
+    if(this.ondeath)this.ondeath();
+  }
+
+  update() {
+    this.weapons.forEach(function (weapon) {
+      weapon.update(this.target);
+    }, this);
+    this.healthBar.update();
+    if (this.cruiseStarting) {
       this.velocity += this.acceleration * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
       this.checkVelocity();
-      if( this.velocity == this.maxVelocity){
-         this.cruiseStarting = false;
+      if (this.velocity == this.maxVelocity) {
+        this.cruiseStarting = false;
       }
     }
-    if(this.hasDest){
-      var destAngle = (Math.atan2(this.dest.y-this.y,this.dest.x-this.x ) + Math.PI/2 + 2*Math.PI)%(2*Math.PI);
-      if(Math.abs(destAngle - this.rotation) < this.turnRate * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */] || Math.abs(destAngle - this.rotation + 2*Math.PI) < this.turnRate * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */]){
-        this.rotation = destAngle;
+    if (this.hasDest) {
+      var destAngle = (Math.atan2(this.dest.y - this.y, this.dest.x - this.x) + Math.PI / 2 + 2 * Math.PI) % (2 * Math.PI);
+      if (Math.abs(destAngle - this.angle) < this.turnRate * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */] || Math.abs(destAngle - this.angle + 2 * Math.PI) < this.turnRate * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */]) {
+        this.angle = destAngle;
         this.angularVelocity = 0;
-      }else if((this.rotation < destAngle && destAngle - this.rotation < Math.PI)||
-      (this.rotation > destAngle && this.rotation - destAngle > Math.PI)){
+      } else if ((this.angle < destAngle && destAngle - this.angle < Math.PI) ||
+        (this.angle > destAngle && this.angle - destAngle > Math.PI)) {
         this.angularVelocity = this.turnRate;
-      }else{
+      } else {
         this.angularVelocity = -this.turnRate;
       }
     }
-    this.rotation += this.angularVelocity * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
-    this.rotation = (this.rotation + 2*Math.PI)%(2*Math.PI);
-    if(this.braking){
+    this.angle += this.angularVelocity * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
+    this.angle = (this.angle + 2 * Math.PI) % (2 * Math.PI);
+    this.sprite.rotation = this.angle;
+    if (this.braking) {
       this.brake();
     }
-    this.x += this.velocity * Math.cos(this.rotation - Math.PI/2) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
-    this.y += this.velocity * Math.sin(this.rotation - Math.PI/2) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
-    if(__WEBPACK_IMPORTED_MODULE_1__mathutils_js__["a" /* dist */](this, this.dest) < this.velocity*2){
+    this.x += this.velocity * Math.cos(this.angle - Math.PI / 2) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
+    this.y += this.velocity * Math.sin(this.angle - Math.PI / 2) * __WEBPACK_IMPORTED_MODULE_2__time_js__["b" /* deltaTime */];
+    if (__WEBPACK_IMPORTED_MODULE_1__mathutils_js__["c" /* dist */](this, this.dest) < this.velocity * 2) {
       this.hasDest = false;
     }
   }
@@ -39977,9 +40136,8 @@ class Ship extends PIXI.Sprite {
 /* harmony export (immutable) */ __webpack_exports__["a"] = Ship;
 
 
-
 /***/ }),
-/* 4 */
+/* 7 */
 /***/ (function(module, exports) {
 
 var g;
@@ -40006,7 +40164,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 5 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -40014,8 +40172,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pixi_js__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__pixi_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__time_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__keyboard_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ship_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__keyboard_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__settings_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__input_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__mathutils_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ship_js__ = __webpack_require__(6);
 
 
 
@@ -40024,8 +40185,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-const BORDER = 10;
-const SCROLLSPEED = 500;
+
+
+
+
+
+
 
 
 var renderer = PIXI.autoDetectRenderer(256, 256);
@@ -40035,71 +40200,16 @@ document.body.appendChild(renderer.view);
 //Create a container object called the `stage`
 var stage = new PIXI.Container();
 stage.interactive = true;
-stage.rightclick = function(event){
+stage.rightclick = function (event) {
   var location = event.data.getLocalPosition(map);
-  battleship.move(location.x,location.y);
+  battleship.move(location.x, location.y);
 };
 
 var background = new PIXI.Graphics().beginFill(0x000000).drawRect(0, 0, 3000, 3000);
 stage.addChild(background);
 var map = new PIXI.Container();
 stage.addChild(map);
-
-
-document.addEventListener("wheel", function(event){
-  let zoomIn = event.deltaY < 0; //simplified
-  let zoomFactor;
-  if (zoomIn) {
-    zoomFactor = 1.1;
-  } else {
-    zoomFactor = (1/1.1);
-  }
-
-  //zoom
-  map.scale.x *= zoomFactor;
-  map.scale.y *= zoomFactor;
-
-  //center on cursor
-  let mouseLocation = renderer.plugins.interaction.eventData.data.global;
-  map.x -= (mouseLocation.x - map.x) * (zoomFactor - 1);
-  map.y -= (mouseLocation.y - map.y) * (zoomFactor - 1);
-
-  correct();
-
-  renderer.render(stage);
-  event.preventDefault();
-}, false);
-
-function correct() {
-  /*
-  //keep in frame
-  map.x = Math.min(0, map.x);
-  map.y = Math.min(0, map.y);
-
-  //keep width in bounds
-  let visible_width = (renderer.width * map.scale.x) + map.x;
-  if (visible_width < renderer.view.width) {
-  map.x = Math.min(0, renderer.view.width - (renderer.width * map.scale.x));
-  if (map.x == 0) {
-  map.scale.x = renderer.view.width / renderer.width;
-}
-}
-
-//keep height in bounds
-let visible_height = (renderer.height * map.scale.y) + map.y;
-if (visible_height < renderer.view.height) {
-map.y = Math.min(0, renderer.view.height - (renderer.height * map.scale.y));
-if (map.y == 0) {
-map.scale.y = renderer.view.height / renderer.height;
-}
-}*/
-
-//keep aspect ratio
-if (map.scale.y != map.scale.x) {
-  map.scale.x = Math.max(map.scale.x, map.scale.y);
-  map.scale.y = Math.max(map.scale.x, map.scale.y);
-}
-}
+var ships = new PIXI.Container();
 
 //Tell the `renderer` to `render` the `stage`
 renderer.render(stage);
@@ -40109,21 +40219,22 @@ renderer.view.style.display = "block";
 renderer.autoResize = true;
 renderer.resize(window.innerWidth, window.innerHeight);
 
-window.onresize = function (event){
+window.onresize = function (event) {
   renderer.resize(window.innerWidth, window.innerHeight);
 };
+__WEBPACK_IMPORTED_MODULE_4__input_js__["a" /* init */](renderer, map);
 
 PIXI.loader
-.add([
-  "files/images/Human-Battleship.png",
-  "files/images/Human-Battlecruiser.png",
-  "files/images/1.jpg"
-])
-.load(setup);
-
+  .add([
+    "files/images/Human-Battleship.png",
+    "files/images/Human-Battlecruiser.png",
+    "files/images/1.jpg"
+  ])
+  .load(setup);
 
 
 var battleship;
+var enemyship;
 var keyW = __WEBPACK_IMPORTED_MODULE_2__keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__keyboard_js__["b" /* keyCode */]("W"));
 var keyA = __WEBPACK_IMPORTED_MODULE_2__keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__keyboard_js__["b" /* keyCode */]("A"));
 var keyS = __WEBPACK_IMPORTED_MODULE_2__keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__keyboard_js__["b" /* keyCode */]("S"));
@@ -40135,33 +40246,42 @@ var keyShift = __WEBPACK_IMPORTED_MODULE_2__keyboard_js__["a" /* key */](16);
 var keyF11 = __WEBPACK_IMPORTED_MODULE_2__keyboard_js__["a" /* key */](122);
 
 function setup() {
-  var spacebg = new PIXI.extras.TilingSprite(PIXI.loader.resources["files/images/1.jpg"].texture, 5000, 5000);
+  var spacebg = new PIXI.extras.TilingSprite(PIXI.loader.resources["files/images/1.jpg"].texture, 20000, 20000);
+  spacebg.x = -20000;
+  spacebg.y = -20000;
+  spacebg.scale.x = 2;
+  spacebg.scale.y = 2;
   map.addChild(spacebg);
+  map.addChild(ships);
 
-  battleship = new __WEBPACK_IMPORTED_MODULE_3__ship_js__["a" /* Ship */](PIXI.loader.resources["files/images/Human-Battleship.png"].texture);
-
-  battleship.x = 500;
-  battleship.y = 250;
-
-  keyA.press = function(event){
+  battleship = new __WEBPACK_IMPORTED_MODULE_6__ship_js__["a" /* Ship */](PIXI.loader.resources["files/images/Human-Battleship.png"].texture);
+  battleship.ondeath = function () {
+    ships.removeChild(battleship);
+  }
+  ships.addChild(battleship);
+  enemyship = new __WEBPACK_IMPORTED_MODULE_6__ship_js__["a" /* Ship */](PIXI.loader.resources["files/images/Human-Battleship.png"].texture);
+  enemyship.x = 1000;
+  enemyship.y = 1000;
+  ships.addChild(enemyship);
+  keyA.press = function (event) {
     battleship.rotateLeft();
   };
-  keyA.release = function(event){
+  keyA.release = function (event) {
     battleship.stopRotation();
   };
-  keyD.press = function(event){
+  keyD.press = function (event) {
     battleship.rotateRight();
   };
-  keyD.release = function(event){
+  keyD.release = function (event) {
     battleship.stopRotation();
   };
-  keyX.press = function(event){
+  keyX.press = function (event) {
     battleship.stop();
   };
-  keyShift.press = function(event){
+  keyShift.press = function (event) {
     battleship.toggleCruise();
   };
-  keyF11.press = function(event){
+  keyF11.press = function (event) {
     if (document.body.requestFullscreen) {
       document.body.requestFullscreen();
     } else if (document.body.webkitRequestFullscreen) {
@@ -40174,61 +40294,75 @@ function setup() {
     renderer.resize(window.innerWidth, window.innerHeight);
 
   };
-  map.addChild(battleship);
   requestAnimationFrame(update);
 
 }
 
 function update() {
   __WEBPACK_IMPORTED_MODULE_1__time_js__["a" /* updateDelta */]();
-  if(renderer.plugins.interaction.eventData.data){
-    let mouseLocation = renderer.plugins.interaction.eventData.data.global;
-    console.log(mouseLocation);
-    if(mouseLocation.x < BORDER){
-      map.x += map.scale.x * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * SCROLLSPEED;
-    }
-    if(mouseLocation.x > window.innerWidth - BORDER){
-      map.x -= map.scale.x * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * SCROLLSPEED;
-    }
-    if(mouseLocation.y < BORDER){
-      map.y += map.scale.y * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * SCROLLSPEED;
-    }
-    if(mouseLocation.y > window.innerHeight - BORDER){
-      map.y -= map.scale.y * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */] * SCROLLSPEED;
-    }
-  }
-  if(keyW.isDown){
+  __WEBPACK_IMPORTED_MODULE_4__input_js__["b" /* update */](renderer, map);
+  if (keyW.isDown) {
     battleship.forward();
   }
-  if(keyS.isDown){
+  if (keyS.isDown) {
     battleship.reverse();
   }
-  if(keyQ.isDown){
+  if (keyQ.isDown) {
     battleship.strafeLeft();
   }
-  if(keyE.isDown){
+  if (keyE.isDown) {
     battleship.strafeRight();
   }
   requestAnimationFrame(update);
+
+  ships.children.forEach(function (ship) {
+    ship.update();
+  });
+  for (let i = 0; i < ships.children.length; i++) {
+    for (var j = i + 1; j < ships.children.length; j++) {
+      if (__WEBPACK_IMPORTED_MODULE_5__mathutils_js__["a" /* checkCollision */](ships.children[i], ships.children[j])) {
+        __WEBPACK_IMPORTED_MODULE_5__mathutils_js__["b" /* resolveCollision */](ships.children[i], ships.children[j]); //might not be completely fair
+        ships.children[i].takeDamage(ships.children[j].ramDamage * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */]);
+        ships.children[j].takeDamage(ships.children[i].ramDamage * __WEBPACK_IMPORTED_MODULE_1__time_js__["b" /* deltaTime */]);
+      }
+    }
+  }
 
   battleship.update();
   renderer.render(stage);
 }
 
-
 /***/ }),
-/* 6 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = dist;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pixi_js__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__pixi_js__);
 
 
-function dist(a, b){
-  return Math.sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));
+
+const WIDTH = 200;
+const HEIGHT = 10;
+
+class HealthBar extends PIXI.Container{
+    constructor(parent){
+        super();
+        this.x = -WIDTH/2;
+        this.y = -HEIGHT/2 - parent.size * 1.5;
+        this.parent = parent;
+        this.outer = new PIXI.Graphics();
+        this.outer.beginFill(0xFF0000);
+        this.outer.drawRect(0, 0, WIDTH, HEIGHT);
+        this.inner = new PIXI.Graphics();
+        this.inner.beginFill(0x00FF00);
+        this.inner.drawRect(0, 0, WIDTH, HEIGHT);
+        this.addChild(this.outer);
+        this.addChild(this.inner);
+    }
+    update(){
+        this.inner.width = this.parent.health/this.parent.maxhealth * WIDTH;
+    }
 }
+/* harmony export (immutable) */ __webpack_exports__["a"] = HealthBar;
 
 
 /***/ })
