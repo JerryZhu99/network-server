@@ -48,7 +48,7 @@ export class Weapon {
         this.currentTime = Math.max(0, this.currentTime - Time.deltaTime);
         if (this.currentTime == 0) {
             if (firing) {
-                if (target) {
+                if (target && target.alive) {
                     this.fireAtTarget(target);
                 } else {
                     this.fireAtNearest();
