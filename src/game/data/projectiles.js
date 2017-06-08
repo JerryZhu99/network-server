@@ -8,7 +8,6 @@ export class Rocket extends Projectile{
         this.damage = 100;
         this.range = 100;
         this.velocity = 20;
-        this.pivot.y = 1/6;
     }
     collision(ship){
         if(this.team != ship.team){

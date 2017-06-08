@@ -48,6 +48,10 @@ export class Ship extends PIXI.Container {
     this.cruiseStarting = this.cruise;
     this.checkVelocity();
   }
+  stopCruise(){
+    this.cruise = false;
+    this.cruiseStarting = false;
+  }
   forward() {
     if (this.cruiseStarting) {
       return;
@@ -106,12 +110,16 @@ export class Ship extends PIXI.Container {
     this.y += this.velocity * Math.sin(this.angle) * Time.deltaTime;
   }
   fireAt(target) {
+    this.stopCruise();
     this.target = target;
     this.firing = true;
   }
+  stopFiring(){
+    this.target = null;
+    this.firing = false;
+  }
   takeDamage(amount){
-    this.cruise = false;
-    this.cruiseStarting = false;
+    this.stopCruise();
     this.health -= amount;
     if(this.health <= 0){
       this.kill();
@@ -122,17 +130,15 @@ export class Ship extends PIXI.Container {
   }
 
   update() {
-    this.weapons.forEach(function (weapon) {
-      weapon.update(this.target, this.firing);
-    }, this);
-    this.healthBar.update();
+
     if (this.cruiseStarting) {
       this.velocity += this.acceleration * Time.deltaTime;
-      this.checkVelocity();
       if (this.velocity == this.maxVelocity) {
         this.cruiseStarting = false;
       }
     }
+
+    if (this.cruise) this.firing = false;
     if (this.hasDest) {
       var destAngle = (Math.atan2(this.dest.y - this.y, this.dest.x - this.x) + Math.PI / 2 + 2 * Math.PI) % (2 * Math.PI);
       if (Math.abs(destAngle - this.angle) < this.turnRate * Time.deltaTime || Math.abs(destAngle - this.angle + 2 * Math.PI) < this.turnRate * Time.deltaTime) {
@@ -153,8 +159,13 @@ export class Ship extends PIXI.Container {
     }
     this.x += this.velocity * Math.cos(this.angle - Math.PI / 2) * Time.deltaTime;
     this.y += this.velocity * Math.sin(this.angle - Math.PI / 2) * Time.deltaTime;
+    this.checkVelocity();
     if (MathUtils.dist(this, this.dest) < this.velocity * 2) {
       this.hasDest = false;
     }
+    this.weapons.forEach(function (weapon) {
+      weapon.update(this.target, this.firing);
+    }, this);
+    this.healthBar.update();
   }
 }

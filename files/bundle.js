@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -39765,7 +39765,7 @@ global.PIXI = exports; // eslint-disable-line
 
 //# sourceMappingURL=pixi.js.map
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
 /* 1 */
@@ -39796,10 +39796,10 @@ function updateDelta(){
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return map; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return ships; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return map; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ships; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return projectiles; });
-/* harmony export (immutable) */ __webpack_exports__["b"] = init;
+/* harmony export (immutable) */ __webpack_exports__["a"] = init;
 /* harmony export (immutable) */ __webpack_exports__["d"] = update;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__);
@@ -39917,8 +39917,8 @@ const MAXZOOM = 1.5;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__weapon_js__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__projectiles_js__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__weapon_js__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__projectiles_js__ = __webpack_require__(12);
 
 
 
@@ -39926,7 +39926,6 @@ class RocketLauncher extends __WEBPACK_IMPORTED_MODULE_0__weapon_js__["a" /* Wea
     constructor(parent){
         super(parent);
         this.cooldown = 0.25;
-        this.pivot.y = 1/6;
     }
     createProjectile(){
         return new __WEBPACK_IMPORTED_MODULE_1__projectiles_js__["a" /* Rocket */]();
@@ -39945,7 +39944,7 @@ class RocketLauncher extends __WEBPACK_IMPORTED_MODULE_0__weapon_js__["a" /* Wea
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_time_js__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gamestate_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__healthbar_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__healthbar_js__ = __webpack_require__(13);
 
 
 
@@ -39995,6 +39994,10 @@ class Ship extends PIXI.Container {
     this.cruise = !this.cruise;
     this.cruiseStarting = this.cruise;
     this.checkVelocity();
+  }
+  stopCruise(){
+    this.cruise = false;
+    this.cruiseStarting = false;
   }
   forward() {
     if (this.cruiseStarting) {
@@ -40054,33 +40057,35 @@ class Ship extends PIXI.Container {
     this.y += this.velocity * Math.sin(this.angle) * __WEBPACK_IMPORTED_MODULE_2__utils_time_js__["b" /* deltaTime */];
   }
   fireAt(target) {
+    this.stopCruise();
     this.target = target;
     this.firing = true;
   }
+  stopFiring(){
+    this.target = null;
+    this.firing = false;
+  }
   takeDamage(amount){
-    this.cruise = false;
-    this.cruiseStarting = false;
+    this.stopCruise();
     this.health -= amount;
     if(this.health <= 0){
       this.kill();
     }
   }
   kill(){
-    __WEBPACK_IMPORTED_MODULE_3__gamestate_js__["c" /* ships */].removeChild(this);
+    __WEBPACK_IMPORTED_MODULE_3__gamestate_js__["b" /* ships */].removeChild(this);
   }
 
   update() {
-    this.weapons.forEach(function (weapon) {
-      weapon.update(this.target, this.firing);
-    }, this);
-    this.healthBar.update();
+
     if (this.cruiseStarting) {
       this.velocity += this.acceleration * __WEBPACK_IMPORTED_MODULE_2__utils_time_js__["b" /* deltaTime */];
-      this.checkVelocity();
       if (this.velocity == this.maxVelocity) {
         this.cruiseStarting = false;
       }
     }
+
+    if (this.cruise) this.firing = false;
     if (this.hasDest) {
       var destAngle = (Math.atan2(this.dest.y - this.y, this.dest.x - this.x) + Math.PI / 2 + 2 * Math.PI) % (2 * Math.PI);
       if (Math.abs(destAngle - this.angle) < this.turnRate * __WEBPACK_IMPORTED_MODULE_2__utils_time_js__["b" /* deltaTime */] || Math.abs(destAngle - this.angle + 2 * Math.PI) < this.turnRate * __WEBPACK_IMPORTED_MODULE_2__utils_time_js__["b" /* deltaTime */]) {
@@ -40101,9 +40106,14 @@ class Ship extends PIXI.Container {
     }
     this.x += this.velocity * Math.cos(this.angle - Math.PI / 2) * __WEBPACK_IMPORTED_MODULE_2__utils_time_js__["b" /* deltaTime */];
     this.y += this.velocity * Math.sin(this.angle - Math.PI / 2) * __WEBPACK_IMPORTED_MODULE_2__utils_time_js__["b" /* deltaTime */];
+    this.checkVelocity();
     if (__WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__["c" /* dist */](this, this.dest) < this.velocity * 2) {
       this.hasDest = false;
     }
+    this.weapons.forEach(function (weapon) {
+      weapon.update(this.target, this.firing);
+    }, this);
+    this.healthBar.update();
   }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Ship;
@@ -40124,7 +40134,7 @@ class Ship extends PIXI.Container {
 
 function init(renderer) {
   document.addEventListener("wheel", function (event) {
-    var map = __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["a" /* map */];
+    var map = __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["c" /* map */];
     let zoomIn = event.deltaY < 0; //simplified
     let zoomFactor;
     if (zoomIn) {
@@ -40153,7 +40163,7 @@ function init(renderer) {
   }, false);
 
   function correct() {
-    var map = __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["a" /* map */];
+    var map = __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["c" /* map */];
 
     //keep aspect ratio
     if (map.scale.y != map.scale.x) {
@@ -40163,7 +40173,7 @@ function init(renderer) {
   }
 }
 function update(renderer) {
-  var map = __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["a" /* map */];
+  var map = __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["c" /* map */];
   if (renderer.plugins.interaction.eventData.data) {
     let mouseLocation = renderer.plugins.interaction.eventData.data.global;
     if (mouseLocation.x < __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["c" /* BORDER */]) {
@@ -40231,6 +40241,67 @@ function key(keyCode) {
 
 /***/ }),
 /* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return elements; });
+/* harmony export (immutable) */ __webpack_exports__["a"] = init;
+/* harmony export (immutable) */ __webpack_exports__["d"] = update;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__);
+
+var elements;
+var style = new PIXI.TextStyle({
+        fontFamily: 'Consolas',
+        fontSize: 18,
+        fill: ['#55ff55'], // gradient
+    });
+function init(stage) {
+    elements = new PIXI.Container();
+    
+    stage.addChild(elements);
+}
+function update(){
+    elements.children.forEach(function(elem){
+        if(elem.update)elem.update();
+    });
+}
+class TextElement extends PIXI.Text{
+    constructor(text){
+        super(text, style);
+    }
+    setUpdate(func){
+        this.update = func;
+        return this;
+    }
+    location(x, y){
+        this.x = x;
+        this.y = y;
+        return this;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["c"] = TextElement;
+
+class ImageElement extends PIXI.Sprite{
+    constructor(texture){
+        super(texture);
+    }
+    setUpdate(func){
+        this.update = func;
+        return this;
+    }
+    location(x, y){
+        this.x = x;
+        this.y = y;
+        return this;
+    }
+}
+/* unused harmony export ImageElement */
+
+
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports) {
 
 var g;
@@ -40257,7 +40328,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -40271,7 +40342,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_mathutils_js__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__game_data_weapons_js__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__game_ship_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__game_ship_js__ = __webpack_require__(6);
+
 
 
 
@@ -40300,10 +40373,7 @@ document.body.appendChild(renderer.view);
 //Create a container object called the `stage`
 var stage = new PIXI.Container();
 stage.interactive = true;
-stage.rightclick = function (event) {
-  var location = event.data.getLocalPosition(__WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["a" /* map */]);
-  player.move(location.x, location.y);
-};
+
 
 var background = new PIXI.Graphics().beginFill(0x000000).drawRect(0, 0, 3000, 3000);
 stage.addChild(background);
@@ -40343,21 +40413,44 @@ var keyX = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEB
 var keyQ = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["b" /* keyCode */]("Q"));
 var keyE = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["b" /* keyCode */]("E"));
 var keyF = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["b" /* keyCode */]("F"));
+var keyZ = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["b" /* keyCode */]("Z"));
+
 var keyShift = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](16);
 var keyF11 = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](122);
 
 function setup() {
-  __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["b" /* init */](stage);
-
-  player = new __WEBPACK_IMPORTED_MODULE_8__game_ship_js__["a" /* Ship */](PIXI.loader.resources["images/ships/Human-Battleship.png"].texture);
+  __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["a" /* init */](stage);
+  __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["a" /* init */](stage);
+  player = new __WEBPACK_IMPORTED_MODULE_9__game_ship_js__["a" /* Ship */](PIXI.loader.resources["images/ships/Human-Battleship.png"].texture);
   player.team = "friendly";
   player.weapons.push(new __WEBPACK_IMPORTED_MODULE_7__game_data_weapons_js__["a" /* RocketLauncher */](player));
-  __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["c" /* ships */].addChild(player);
-  enemyship = new __WEBPACK_IMPORTED_MODULE_8__game_ship_js__["a" /* Ship */](PIXI.loader.resources["images/ships/Human-Battleship.png"].texture);
+  __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["b" /* elements */].addChild(
+    new __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["c" /* TextElement */]()
+    .setUpdate(function () {
+      this.text = (`Cruise: ${player.cruise?"on":"off"}`);
+    })
+    .location(30, 30)
+  );
+  __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["b" /* elements */].addChild(
+    new __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["c" /* TextElement */]()
+    .setUpdate(function () {
+      this.text = (`Weapons: ${player.firing?"on":"off"}`);
+    })
+    .location(30, 60)
+  );
+    __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["b" /* elements */].addChild(
+    new __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["c" /* TextElement */]()
+    .setUpdate(function () {
+      this.text = (`Speed: ${player.velocity.toFixed(1)}`);
+    })
+    .location(30, 90)
+  );
+  __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["b" /* ships */].addChild(player);
+  enemyship = new __WEBPACK_IMPORTED_MODULE_9__game_ship_js__["a" /* Ship */](PIXI.loader.resources["images/ships/Human-Battleship.png"].texture);
   enemyship.x = 1000;
   enemyship.y = 1000;
   enemyship.team = "enemy";
-  __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["c" /* ships */].addChild(enemyship);
+  __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["b" /* ships */].addChild(enemyship);
   keyA.press = function (event) {
     player.rotateLeft();
   };
@@ -40389,15 +40482,31 @@ function setup() {
     renderer.resize(window.innerWidth, window.innerHeight);
 
   };
-  keyF.press = function(event){
+  keyF.press = function (event) {
     targeting = !targeting;
   };
-  stage.click = function(event){
-    if(targeting){
-        var location = event.data.getLocalPosition(__WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["a" /* map */]);
+  stage.click = function (event) {
+    if (targeting) {
+      var location = event.data.getLocalPosition(__WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["c" /* map */]);
       player.fireAt(location);
-      targeting = false; 
+      targeting = false;
     }
+  };
+  __WEBPACK_IMPORTED_MODULE_9__game_ship_js__["a" /* Ship */].click = function (event) {
+    if (targeting) {
+      player.fireAt(this);
+      targeting = false;
+    }
+    event.stopPropagation();
+  };
+  stage.rightclick = function (event) {
+    var location = event.data.getLocalPosition(__WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["c" /* map */]);
+    player.move(location.x, location.y);
+    targeting = false;
+  };
+  keyZ.press = function (event) {
+    targeting = false;
+    player.stopFiring();
   };
   requestAnimationFrame(update);
 
@@ -40406,6 +40515,7 @@ function setup() {
 function update() {
   __WEBPACK_IMPORTED_MODULE_1__utils_time_js__["a" /* updateDelta */]();
   __WEBPACK_IMPORTED_MODULE_4__input_input_js__["b" /* update */](renderer);
+  stage.cursor = targeting ? "crosshair" : "default";
   if (keyW.isDown) {
     player.forward();
   }
@@ -40418,6 +40528,7 @@ function update() {
   if (keyE.isDown) {
     player.strafeRight();
   }
+  __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["d" /* update */]();
   requestAnimationFrame(update);
 
   __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["d" /* update */]();
@@ -40426,13 +40537,13 @@ function update() {
 }
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__projectile_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__projectile_js__ = __webpack_require__(14);
 
 
 
@@ -40441,7 +40552,7 @@ class Rocket extends __WEBPACK_IMPORTED_MODULE_1__projectile_js__["a" /* Project
         super(PIXI.loader.resources["images/projectiles/rocket.png"].texture);
         this.team = team;
         this.damage = 100;
-        this.range = 2000;
+        this.range = 100;
         this.velocity = 20;
     }
     collision(ship){
@@ -40457,7 +40568,7 @@ class Rocket extends __WEBPACK_IMPORTED_MODULE_1__projectile_js__["a" /* Project
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -40490,7 +40601,7 @@ class HealthBar extends PIXI.Container{
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -40510,7 +40621,7 @@ class Projectile extends PIXI.Sprite {
         this.anchor.y = 0.5;
         this.size = 50.0; // radius
         this.velocity = 50.0;
-        this.range = 2000;
+        this.range = 100;
         this.distanceTravelled = 0;
         this.team = null;
     }
@@ -40544,7 +40655,7 @@ class Projectile extends PIXI.Sprite {
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

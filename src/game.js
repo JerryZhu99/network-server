@@ -14,6 +14,7 @@ import * as GameState from "./game/gamestate.js"
 
 import * as Weapons from "./game/data/weapons.js"
 
+import * as GameUI from "./ui/gameui.js"
 
 import {
   Ship
@@ -28,10 +29,7 @@ document.body.appendChild(renderer.view);
 //Create a container object called the `stage`
 var stage = new PIXI.Container();
 stage.interactive = true;
-stage.rightclick = function (event) {
-  var location = event.data.getLocalPosition(GameState.map);
-  player.move(location.x, location.y);
-};
+
 
 var background = new PIXI.Graphics().beginFill(0x000000).drawRect(0, 0, 3000, 3000);
 stage.addChild(background);
@@ -71,15 +69,38 @@ var keyX = Keyboard.key(Keyboard.keyCode("X"));
 var keyQ = Keyboard.key(Keyboard.keyCode("Q"));
 var keyE = Keyboard.key(Keyboard.keyCode("E"));
 var keyF = Keyboard.key(Keyboard.keyCode("F"));
+var keyZ = Keyboard.key(Keyboard.keyCode("Z"));
+
 var keyShift = Keyboard.key(16);
 var keyF11 = Keyboard.key(122);
 
 function setup() {
   GameState.init(stage);
-
+  GameUI.init(stage);
   player = new Ship(PIXI.loader.resources["images/ships/Human-Battleship.png"].texture);
   player.team = "friendly";
   player.weapons.push(new Weapons.RocketLauncher(player));
+  GameUI.elements.addChild(
+    new GameUI.TextElement()
+    .setUpdate(function () {
+      this.text = (`Cruise: ${player.cruise?"on":"off"}`);
+    })
+    .location(30, 30)
+  );
+  GameUI.elements.addChild(
+    new GameUI.TextElement()
+    .setUpdate(function () {
+      this.text = (`Weapons: ${player.firing?"on":"off"}`);
+    })
+    .location(30, 60)
+  );
+    GameUI.elements.addChild(
+    new GameUI.TextElement()
+    .setUpdate(function () {
+      this.text = (`Speed: ${player.velocity.toFixed(1)}`);
+    })
+    .location(30, 90)
+  );
   GameState.ships.addChild(player);
   enemyship = new Ship(PIXI.loader.resources["images/ships/Human-Battleship.png"].texture);
   enemyship.x = 1000;
@@ -117,15 +138,31 @@ function setup() {
     renderer.resize(window.innerWidth, window.innerHeight);
 
   };
-  keyF.press = function(event){
+  keyF.press = function (event) {
     targeting = !targeting;
   };
-  stage.click = function(event){
-    if(targeting){
-        var location = event.data.getLocalPosition(GameState.map);
+  stage.click = function (event) {
+    if (targeting) {
+      var location = event.data.getLocalPosition(GameState.map);
       player.fireAt(location);
-      targeting = false; 
+      targeting = false;
     }
+  };
+  Ship.click = function (event) {
+    if (targeting) {
+      player.fireAt(this);
+      targeting = false;
+    }
+    event.stopPropagation();
+  };
+  stage.rightclick = function (event) {
+    var location = event.data.getLocalPosition(GameState.map);
+    player.move(location.x, location.y);
+    targeting = false;
+  };
+  keyZ.press = function (event) {
+    targeting = false;
+    player.stopFiring();
   };
   requestAnimationFrame(update);
 
@@ -134,6 +171,7 @@ function setup() {
 function update() {
   Time.updateDelta();
   Input.update(renderer);
+  stage.cursor = targeting ? "crosshair" : "default";
   if (keyW.isDown) {
     player.forward();
   }
@@ -146,6 +184,7 @@ function update() {
   if (keyE.isDown) {
     player.strafeRight();
   }
+  GameUI.update();
   requestAnimationFrame(update);
 
   GameState.update();
