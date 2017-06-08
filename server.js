@@ -81,6 +81,9 @@ app.get('/', function (req, res) {
 app.get('/files/*', function(req, res){
   res.sendFile(__dirname+req.url);
 });
+app.get('/images/*', function(req, res){
+  res.sendFile(__dirname+"/files"+req.url);
+});
 
 app.get('/pagecount', function (req, res) {
   if (db) {

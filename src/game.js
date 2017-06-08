@@ -1,18 +1,23 @@
-import _ from "./pixi.js";
+import _ from "./lib/pixi.js";
 
-import * as Time from "./time.js";
+import * as Time from "./utils/time.js";
 
-import * as Keyboard from "./keyboard.js";
+import * as Keyboard from "./input/keyboard.js";
 
-import * as Settings from "./settings.js"
+import * as Settings from "./utils/settings.js"
 
-import * as Input from "./input.js"
+import * as Input from "./input/input.js"
 
-import * as MathUtils from "./mathutils.js"
+import * as MathUtils from "./utils/mathutils.js"
+
+import * as GameState from "./game/gamestate.js"
+
+import * as Weapons from "./game/data/weapons.js"
+
 
 import {
   Ship
-} from "./ship.js";
+} from "./game/ship.js";
 
 
 
@@ -24,15 +29,13 @@ document.body.appendChild(renderer.view);
 var stage = new PIXI.Container();
 stage.interactive = true;
 stage.rightclick = function (event) {
-  var location = event.data.getLocalPosition(map);
-  battleship.move(location.x, location.y);
+  var location = event.data.getLocalPosition(GameState.map);
+  player.move(location.x, location.y);
 };
 
 var background = new PIXI.Graphics().beginFill(0x000000).drawRect(0, 0, 3000, 3000);
 stage.addChild(background);
-var map = new PIXI.Container();
-stage.addChild(map);
-var ships = new PIXI.Container();
+
 
 //Tell the `renderer` to `render` the `stage`
 renderer.render(stage);
@@ -45,18 +48,20 @@ renderer.resize(window.innerWidth, window.innerHeight);
 window.onresize = function (event) {
   renderer.resize(window.innerWidth, window.innerHeight);
 };
-Input.init(renderer, map);
+Input.init(renderer);
 
 PIXI.loader
   .add([
-    "files/images/Human-Battleship.png",
-    "files/images/Human-Battlecruiser.png",
-    "files/images/1.jpg"
+    "images/ships/Human-Battleship.png",
+    "images/ships/Human-Battlecruiser.png",
+    "images/backgrounds/1.jpg",
+    "images/projectiles/rocket.png"
   ])
   .load(setup);
 
 
-var battleship;
+var player;
+var targeting = false;
 var enemyship;
 var keyW = Keyboard.key(Keyboard.keyCode("W"));
 var keyA = Keyboard.key(Keyboard.keyCode("A"));
@@ -65,44 +70,39 @@ var keyD = Keyboard.key(Keyboard.keyCode("D"));
 var keyX = Keyboard.key(Keyboard.keyCode("X"));
 var keyQ = Keyboard.key(Keyboard.keyCode("Q"));
 var keyE = Keyboard.key(Keyboard.keyCode("E"));
+var keyF = Keyboard.key(Keyboard.keyCode("F"));
 var keyShift = Keyboard.key(16);
 var keyF11 = Keyboard.key(122);
 
 function setup() {
-  var spacebg = new PIXI.extras.TilingSprite(PIXI.loader.resources["files/images/1.jpg"].texture, 20000, 20000);
-  spacebg.x = -20000;
-  spacebg.y = -20000;
-  spacebg.scale.x = 2;
-  spacebg.scale.y = 2;
-  map.addChild(spacebg);
-  map.addChild(ships);
+  GameState.init(stage);
 
-  battleship = new Ship(PIXI.loader.resources["files/images/Human-Battleship.png"].texture);
-  battleship.ondeath = function () {
-    ships.removeChild(battleship);
-  }
-  ships.addChild(battleship);
-  enemyship = new Ship(PIXI.loader.resources["files/images/Human-Battleship.png"].texture);
+  player = new Ship(PIXI.loader.resources["images/ships/Human-Battleship.png"].texture);
+  player.team = "friendly";
+  player.weapons.push(new Weapons.RocketLauncher(player));
+  GameState.ships.addChild(player);
+  enemyship = new Ship(PIXI.loader.resources["images/ships/Human-Battleship.png"].texture);
   enemyship.x = 1000;
   enemyship.y = 1000;
-  ships.addChild(enemyship);
+  enemyship.team = "enemy";
+  GameState.ships.addChild(enemyship);
   keyA.press = function (event) {
-    battleship.rotateLeft();
+    player.rotateLeft();
   };
   keyA.release = function (event) {
-    battleship.stopRotation();
+    player.stopRotation();
   };
   keyD.press = function (event) {
-    battleship.rotateRight();
+    player.rotateRight();
   };
   keyD.release = function (event) {
-    battleship.stopRotation();
+    player.stopRotation();
   };
   keyX.press = function (event) {
-    battleship.stop();
+    player.stop();
   };
   keyShift.press = function (event) {
-    battleship.toggleCruise();
+    player.toggleCruise();
   };
   keyF11.press = function (event) {
     if (document.body.requestFullscreen) {
@@ -117,40 +117,38 @@ function setup() {
     renderer.resize(window.innerWidth, window.innerHeight);
 
   };
+  keyF.press = function(event){
+    targeting = !targeting;
+  };
+  stage.click = function(event){
+    if(targeting){
+        var location = event.data.getLocalPosition(GameState.map);
+      player.fireAt(location);
+      targeting = false; 
+    }
+  };
   requestAnimationFrame(update);
 
 }
 
 function update() {
   Time.updateDelta();
-  Input.update(renderer, map);
+  Input.update(renderer);
   if (keyW.isDown) {
-    battleship.forward();
+    player.forward();
   }
   if (keyS.isDown) {
-    battleship.reverse();
+    player.reverse();
   }
   if (keyQ.isDown) {
-    battleship.strafeLeft();
+    player.strafeLeft();
   }
   if (keyE.isDown) {
-    battleship.strafeRight();
+    player.strafeRight();
   }
   requestAnimationFrame(update);
 
-  ships.children.forEach(function (ship) {
-    ship.update();
-  });
-  for (let i = 0; i < ships.children.length; i++) {
-    for (var j = i + 1; j < ships.children.length; j++) {
-      if (MathUtils.checkCollision(ships.children[i], ships.children[j])) {
-        MathUtils.resolveCollision(ships.children[i], ships.children[j]); //might not be completely fair
-        ships.children[i].takeDamage(ships.children[j].ramDamage * Time.deltaTime);
-        ships.children[j].takeDamage(ships.children[i].ramDamage * Time.deltaTime);
-      }
-    }
-  }
+  GameState.update();
 
-  battleship.update();
   renderer.render(stage);
 }

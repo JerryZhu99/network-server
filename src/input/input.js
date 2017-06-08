@@ -1,8 +1,9 @@
-import * as Settings from "./settings.js";
-import * as Time from "./time.js";
-
-export function init(renderer, map) {
+import * as Settings from "./../utils/settings.js";
+import * as Time from "./../utils/time.js";
+import * as GameState from "./../game/gamestate.js"
+export function init(renderer) {
   document.addEventListener("wheel", function (event) {
+    var map = GameState.map;
     let zoomIn = event.deltaY < 0; //simplified
     let zoomFactor;
     if (zoomIn) {
@@ -31,7 +32,7 @@ export function init(renderer, map) {
   }, false);
 
   function correct() {
-    
+    var map = GameState.map;
 
     //keep aspect ratio
     if (map.scale.y != map.scale.x) {
@@ -40,7 +41,8 @@ export function init(renderer, map) {
     }
   }
 }
-export function update(renderer, map) {
+export function update(renderer) {
+  var map = GameState.map;
   if (renderer.plugins.interaction.eventData.data) {
     let mouseLocation = renderer.plugins.interaction.eventData.data.global;
     if (mouseLocation.x < Settings.BORDER) {

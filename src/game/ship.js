@@ -1,6 +1,7 @@
-import _ from "./pixi.js";
-import * as MathUtils from "./mathutils.js";
-import * as Time from "./time.js";
+import _ from "./../lib/pixi.js";
+import * as MathUtils from "./../utils/mathutils.js";
+import * as Time from "./../utils/time.js";
+import * as GameState from "./gamestate.js"
 import {HealthBar} from "./healthbar.js"
 
 export class Ship extends PIXI.Container {
@@ -28,6 +29,7 @@ export class Ship extends PIXI.Container {
     this.weapons = [];
     this.target = null;
     this.healthBar = new HealthBar(this);
+    this.team = "neutral";
     this.addChild(this.healthBar);
   }
 
@@ -103,24 +105,25 @@ export class Ship extends PIXI.Container {
     this.x += this.velocity * Math.cos(this.angle) * Time.deltaTime;
     this.y += this.velocity * Math.sin(this.angle) * Time.deltaTime;
   }
-  fireAt(ship) {
-    this.target = ship;
+  fireAt(target) {
+    this.target = target;
+    this.firing = true;
   }
   takeDamage(amount){
     this.cruise = false;
     this.cruiseStarting = false;
     this.health -= amount;
-    if(this.health < 0){
+    if(this.health <= 0){
       this.kill();
     }
   }
   kill(){
-    if(this.ondeath)this.ondeath();
+    GameState.ships.removeChild(this);
   }
 
   update() {
     this.weapons.forEach(function (weapon) {
-      weapon.update(this.target);
+      weapon.update(this.target, this.firing);
     }, this);
     this.healthBar.update();
     if (this.cruiseStarting) {
