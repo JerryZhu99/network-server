@@ -39926,10 +39926,10 @@ class RocketLauncher extends __WEBPACK_IMPORTED_MODULE_0__weapon_js__["a" /* Wea
     constructor(parent){
         super(parent);
         this.cooldown = 0.25;
+        this.range = 100;
+        this.projectile = __WEBPACK_IMPORTED_MODULE_1__projectiles_js__["a" /* Rocket */];
     }
-    createProjectile(){
-        return new __WEBPACK_IMPORTED_MODULE_1__projectiles_js__["a" /* Rocket */]();
-    }
+
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = RocketLauncher;
 
@@ -39962,7 +39962,7 @@ class Ship extends PIXI.Container {
     this.angle = 0.0;
     this.angularVelocity = 0.0;
     this.turnRate = 1.0;
-    this.acceleration = 25.0;
+    this.acceleration = 40.0;
     this.velocity = 0.0;
     this.maxVelocity = 100.0;
     this.minVelocity = -25.0;
@@ -40061,6 +40061,11 @@ class Ship extends PIXI.Container {
     this.target = target;
     this.firing = true;
   }
+  fireAtNearest(){
+    this.stopCruise();
+    this.target = null;
+    this.firing = true;
+  }
   stopFiring(){
     this.target = null;
     this.firing = false;
@@ -40152,10 +40157,10 @@ function init(renderer) {
     map.scale.y = Math.max(__WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["a" /* MINZOOM */], map.scale.y);
     map.scale.y = Math.min(__WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["b" /* MAXZOOM */], map.scale.y);
 
-    zoomFactor = map.scale.x/original;
+    zoomFactor = map.scale.x / original;
     //center on cursor
-    map.x -= (window.innerWidth/2 - map.x) * (zoomFactor - 1);
-    map.y -= (window.innerHeight/2 - map.y) * (zoomFactor - 1);
+    map.x -= (window.innerWidth / 2 - map.x) * (zoomFactor - 1);
+    map.y -= (window.innerHeight / 2 - map.y) * (zoomFactor - 1);
 
     correct();
 
@@ -40176,6 +40181,12 @@ function update(renderer) {
   var map = __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["c" /* map */];
   if (renderer.plugins.interaction.eventData.data) {
     let mouseLocation = renderer.plugins.interaction.eventData.data.global;
+    if (mouseLocation.x < 0 ||
+      mouseLocation.x > window.innerWidth ||
+      mouseLocation.y < 0 ||
+      mouseLocation.y > window.innerHeight) {
+      return;
+    }
     if (mouseLocation.x < __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["c" /* BORDER */]) {
       map.x += map.scale.x * __WEBPACK_IMPORTED_MODULE_1__utils_time_js__["b" /* deltaTime */] * __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["d" /* SCROLLSPEED */];
     }
@@ -40488,7 +40499,7 @@ function setup() {
   stage.click = function (event) {
     if (targeting) {
       var location = event.data.getLocalPosition(__WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["c" /* map */]);
-      player.fireAt(location);
+      player.fireAtNearest(); 
       targeting = false;
     }
   };
@@ -40557,7 +40568,7 @@ class Rocket extends __WEBPACK_IMPORTED_MODULE_1__projectile_js__["a" /* Project
     }
     collision(ship){
         if(this.team != ship.team){
-            ship.takeDamage(100);
+            ship.takeDamage(this.damage);
             this.kill();
         }
     }
@@ -40621,9 +40632,9 @@ class Projectile extends PIXI.Sprite {
         this.anchor.y = 0.5;
         this.size = 50.0; // radius
         this.velocity = 50.0;
-        this.range = 100;
+        this.range = null; // set by weapon
         this.distanceTravelled = 0;
-        this.team = null;
+        this.team = null; //set by weapon
     }
     setTarget(point){
         this.target = point;
@@ -40669,42 +40680,61 @@ class Projectile extends PIXI.Sprite {
 
 
 
-class Weapon{
-    constructor(parent){
+class Weapon {
+    constructor(parent) {
         this.cooldown = 5;
         this.currentTime = 0;
         this.projectile = null;
         this.firing = false;
         this.parent = parent;
+        this.range = 100;
     }
-    createProjectile(){
-        
-    }
-    fireAtTarget(target){
+ 
+    fireAtTarget(target) {
         this.fireAt(Math.atan2(target.y - this.parent.y, target.x - this.parent.x));
     }
-    fireAt(direction){
+    fireAt(direction) {
         this.firing = true;
         this.currentTime = this.cooldown;
-        var newProjectile = this.createProjectile();
+        var newProjectile = new this.projectile();
         newProjectile.x = this.parent.x;
         newProjectile.y = this.parent.y;
+        newProjectile.range = this.range;
         newProjectile.team = this.parent.team;
         newProjectile.setDirection(direction);
         __WEBPACK_IMPORTED_MODULE_3__gamestate_js__["e" /* projectiles */].addChild(newProjectile);
     }
+    fireAtNearest() {
+        var dist = Number.POSITIVE_INFINITY;
+        var nearest = null;
+        __WEBPACK_IMPORTED_MODULE_3__gamestate_js__["b" /* ships */].children.forEach(function (ship) {
+            var currentdist = __WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__["c" /* dist */](ship, this.parent)
+            if (currentdist < dist && ship.team != this.parent.team) {
+                nearest = ship;
+                dist = currentdist;
+            }
+            if(nearest){
+                this.fireAtTarget(nearest);
+            }else{
+                return;
+            }
+        }, this);
+    }
 
-    update(target, firing){
-        this.currentTime = Math.max(0,this.currentTime - __WEBPACK_IMPORTED_MODULE_2__utils_time_js__["b" /* deltaTime */]);
-        if(this.currentTime == 0){
-            if(firing){
-                this.fireAtTarget(target);
+    update(target, firing) {
+        this.currentTime = Math.max(0, this.currentTime - __WEBPACK_IMPORTED_MODULE_2__utils_time_js__["b" /* deltaTime */]);
+        if (this.currentTime == 0) {
+            if (firing) {
+                if (target) {
+                    this.fireAtTarget(target);
+                } else {
+                    this.fireAtNearest();
+                }
             }
         }
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Weapon;
-
 
 
 /***/ })

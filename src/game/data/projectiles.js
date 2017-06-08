@@ -11,7 +11,7 @@ export class Rocket extends Projectile{
     }
     collision(ship){
         if(this.team != ship.team){
-            ship.takeDamage(100);
+            ship.takeDamage(this.damage);
             this.kill();
         }
     }

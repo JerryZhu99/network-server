@@ -15,7 +15,7 @@ export class Ship extends PIXI.Container {
     this.angle = 0.0;
     this.angularVelocity = 0.0;
     this.turnRate = 1.0;
-    this.acceleration = 25.0;
+    this.acceleration = 40.0;
     this.velocity = 0.0;
     this.maxVelocity = 100.0;
     this.minVelocity = -25.0;
@@ -112,6 +112,11 @@ export class Ship extends PIXI.Container {
   fireAt(target) {
     this.stopCruise();
     this.target = target;
+    this.firing = true;
+  }
+  fireAtNearest(){
+    this.stopCruise();
+    this.target = null;
     this.firing = true;
   }
   stopFiring(){

@@ -21,10 +21,10 @@ export function init(renderer) {
     map.scale.y = Math.max(Settings.MINZOOM, map.scale.y);
     map.scale.y = Math.min(Settings.MAXZOOM, map.scale.y);
 
-    zoomFactor = map.scale.x/original;
+    zoomFactor = map.scale.x / original;
     //center on cursor
-    map.x -= (window.innerWidth/2 - map.x) * (zoomFactor - 1);
-    map.y -= (window.innerHeight/2 - map.y) * (zoomFactor - 1);
+    map.x -= (window.innerWidth / 2 - map.x) * (zoomFactor - 1);
+    map.y -= (window.innerHeight / 2 - map.y) * (zoomFactor - 1);
 
     correct();
 
@@ -45,6 +45,12 @@ export function update(renderer) {
   var map = GameState.map;
   if (renderer.plugins.interaction.eventData.data) {
     let mouseLocation = renderer.plugins.interaction.eventData.data.global;
+    if (mouseLocation.x < 0 ||
+      mouseLocation.x > window.innerWidth ||
+      mouseLocation.y < 0 ||
+      mouseLocation.y > window.innerHeight) {
+      return;
+    }
     if (mouseLocation.x < Settings.BORDER) {
       map.x += map.scale.x * Time.deltaTime * Settings.SCROLLSPEED;
     }

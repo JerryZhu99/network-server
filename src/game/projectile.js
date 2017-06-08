@@ -9,9 +9,9 @@ export class Projectile extends PIXI.Sprite {
         this.anchor.y = 0.5;
         this.size = 50.0; // radius
         this.velocity = 50.0;
-        this.range = 100;
+        this.range = null; // set by weapon
         this.distanceTravelled = 0;
-        this.team = null;
+        this.team = null; //set by weapon
     }
     setTarget(point){
         this.target = point;

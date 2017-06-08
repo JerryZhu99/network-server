@@ -5,8 +5,8 @@ export class RocketLauncher extends Weapon{
     constructor(parent){
         super(parent);
         this.cooldown = 0.25;
+        this.range = 100;
+        this.projectile = Projectiles.Rocket;
     }
-    createProjectile(){
-        return new Projectiles.Rocket();
-    }
+
 }

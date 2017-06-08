@@ -144,7 +144,7 @@ function setup() {
   stage.click = function (event) {
     if (targeting) {
       var location = event.data.getLocalPosition(GameState.map);
-      player.fireAt(location);
+      player.fireAtNearest(); 
       targeting = false;
     }
   };
