@@ -1,9 +1,15 @@
 import _ from "./../../lib/pixi.js";
 import {Projectile} from "./../projectile.js";
 
+var resources;
+export function load(loader) {
+    resources = loader.resources;
+    loader.add("Rocket", "images/projectiles/rocket.png");
+}
+
 export class Rocket extends Projectile{
     constructor(team){  
-        super(PIXI.loader.resources["images/projectiles/rocket.png"].texture);
+        super(resources["Rocket"].texture);
         this.team = team;
         this.damage = 100;
         this.range = 100;

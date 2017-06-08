@@ -11,6 +11,7 @@ export class Ship extends PIXI.Container {
     this.addChild(this.sprite);
     this.sprite.anchor.x = 0.5;
     this.sprite.anchor.y = 0.5;
+    this.interactive = true;
     this.size = 120.0; // radius
     this.angle = 0.0;
     this.angularVelocity = 0.0;
@@ -23,7 +24,7 @@ export class Ship extends PIXI.Container {
     this.hasDest = false;
     this.cruise = false;
     this.cruiseStarting = false;
-    this.maxhealth = 1000.0;
+    this.maxHealth = 1000.0;
     this.health = 1000.0;
     this.ramDamage = 50.0;
     this.weapons = [];
@@ -31,6 +32,7 @@ export class Ship extends PIXI.Container {
     this.healthBar = new HealthBar(this);
     this.team = "neutral";
     this.addChild(this.healthBar);
+
   }
 
   move(x, y) {

@@ -1,7 +1,25 @@
 import * as Settings from "./../utils/settings.js";
 import * as Time from "./../utils/time.js";
-import * as GameState from "./../game/gamestate.js"
-export function init(renderer) {
+import * as GameState from "./../game/gamestate.js";
+import * as Keyboard from "./keyboard.js";
+import {Ship} from "./../game/ship.js";
+
+var keyW = Keyboard.key(Keyboard.keyCode("W"));
+var keyA = Keyboard.key(Keyboard.keyCode("A"));
+var keyS = Keyboard.key(Keyboard.keyCode("S"));
+var keyD = Keyboard.key(Keyboard.keyCode("D"));
+var keyX = Keyboard.key(Keyboard.keyCode("X"));
+var keyQ = Keyboard.key(Keyboard.keyCode("Q"));
+var keyE = Keyboard.key(Keyboard.keyCode("E"));
+var keyF = Keyboard.key(Keyboard.keyCode("F"));
+var keyZ = Keyboard.key(Keyboard.keyCode("Z"));
+var keyShift = Keyboard.key(16);
+var keyF11 = Keyboard.key(122);
+
+var targeting = false;
+
+
+export function init(renderer, stage) {
   document.addEventListener("wheel", function (event) {
     var map = GameState.map;
     let zoomIn = event.deltaY < 0; //simplified
@@ -40,8 +58,68 @@ export function init(renderer) {
       map.scale.y = Math.max(map.scale.x, map.scale.y);
     }
   }
+  keyA.press = function (event) {
+    GameState.player.rotateLeft();
+  };
+  keyA.release = function (event) {
+    GameState.player.stopRotation();
+  };
+  keyD.press = function (event) {
+    GameState.player.rotateRight();
+  };
+  keyD.release = function (event) {
+    GameState.player.stopRotation();
+  };
+  keyX.press = function (event) {
+    GameState.player.stop();
+  };
+  keyShift.press = function (event) {
+    GameState.player.toggleCruise();
+  };
+  keyF11.press = function (event) {
+    if (document.body.requestFullscreen) {
+      document.body.requestFullscreen();
+    } else if (document.body.webkitRequestFullscreen) {
+      document.body.webkitRequestFullscreen();
+    } else if (document.body.mozRequestFullScreen) {
+      document.body.mozRequestFullScreen();
+    } else if (document.body.msRequestFullscreen) {
+      document.body.msRequestFullscreen();
+    }
+    renderer.resize(window.innerWidth, window.innerHeight);
+
+  };
+  keyF.press = function (event) {
+    targeting = !targeting;
+  };
+  stage.click = function (event) {
+    if (targeting) {
+      var location = event.data.getLocalPosition(GameState.map);
+      GameState.player.fireAtNearest(); 
+      targeting = false;
+    }
+  };
+  GameState.ships.interactive = true;
+  GameState.ships.click = function (event) {
+    console.log("ship clicked");
+    if (targeting) {
+      GameState.player.fireAt(event.target);
+      targeting = false;
+    }
+    event.stopPropagation();
+  };
+  stage.rightclick = function (event) {
+    var location = event.data.getLocalPosition(GameState.map);
+    GameState.player.move(location.x, location.y);
+    targeting = false;
+  };
+  keyZ.press = function (event) {
+    targeting = false;
+    GameState.player.stopFiring();
+  };
+
 }
-export function update(renderer) {
+export function update(renderer, stage) {
   var map = GameState.map;
   if (renderer.plugins.interaction.eventData.data) {
     let mouseLocation = renderer.plugins.interaction.eventData.data.global;
@@ -63,5 +141,18 @@ export function update(renderer) {
     if (mouseLocation.y > window.innerHeight - Settings.BORDER) {
       map.y -= map.scale.y * Time.deltaTime * Settings.SCROLLSPEED;
     }
+  }
+  map.parent.cursor = targeting ? "crosshair" : "default";
+  if (keyW.isDown) {
+    GameState.player.forward();
+  }
+  if (keyS.isDown) {
+    GameState.player.reverse();
+  }
+  if (keyQ.isDown) {
+    GameState.player.strafeLeft();
+  }
+  if (keyE.isDown) {
+    GameState.player.strafeRight();
   }
 }

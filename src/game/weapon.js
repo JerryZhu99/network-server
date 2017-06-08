@@ -12,7 +12,7 @@ export class Weapon {
         this.parent = parent;
         this.range = 100;
     }
- 
+
     fireAtTarget(target) {
         this.fireAt(Math.atan2(target.y - this.parent.y, target.x - this.parent.x));
     }
@@ -36,12 +36,12 @@ export class Weapon {
                 nearest = ship;
                 dist = currentdist;
             }
-            if(nearest){
-                this.fireAtTarget(nearest);
-            }else{
-                return;
-            }
         }, this);
+        if (nearest) {
+            this.fireAtTarget(nearest);
+        } else {
+            return;
+        }
     }
 
     update(target, firing) {

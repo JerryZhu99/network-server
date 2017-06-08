@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 13);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -39765,10 +39765,112 @@ global.PIXI = exports; // eslint-disable-line
 
 //# sourceMappingURL=pixi.js.map
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
 
 /***/ }),
 /* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return map; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return ships; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return projectiles; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return player; });
+/* harmony export (immutable) */ __webpack_exports__["a"] = load;
+/* harmony export (immutable) */ __webpack_exports__["b"] = init;
+/* harmony export (immutable) */ __webpack_exports__["c"] = update;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_time_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ship_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__data_ships_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__data_weapons_js__ = __webpack_require__(7);
+
+
+
+
+
+
+
+var map;
+var ships;
+var projectiles;
+var player;
+
+var resources;
+function load(loader) {
+    resources = loader.resources;
+    loader.add("Background", "images/backgrounds/1.jpg");
+}
+
+function init(stage) {
+    map = new PIXI.Container();
+    stage.addChild(map);
+    ships = new PIXI.Container();
+    projectiles = new PIXI.Container();
+    var spacebg = new PIXI.extras.TilingSprite(resources["Background"].texture, 20000, 20000);
+    spacebg.x = -20000;
+    spacebg.y = -20000;
+    spacebg.scale.x = 2;
+    spacebg.scale.y = 2;
+    map.addChild(spacebg);
+    map.addChild(projectiles);
+    map.addChild(ships);
+
+    player = new __WEBPACK_IMPORTED_MODULE_4__data_ships_js__["b" /* Battleship */]();;
+    player.team = "friendly";
+    player.weapons.push(new __WEBPACK_IMPORTED_MODULE_5__data_weapons_js__["a" /* RocketLauncher */](player));
+    ships.addChild(player);
+
+
+    var e1 = new __WEBPACK_IMPORTED_MODULE_4__data_ships_js__["b" /* Battleship */]();
+    e1.x = 1000;
+    e1.y = 1000;
+    e1.team = "enemy";
+    ships.addChild(e1);
+
+    var e2 = new __WEBPACK_IMPORTED_MODULE_4__data_ships_js__["b" /* Battleship */]();
+    e2.x = 1500;
+    e2.y = 1000;
+    e2.team = "enemy";
+    ships.addChild(e2);
+
+    var e3 = new __WEBPACK_IMPORTED_MODULE_4__data_ships_js__["b" /* Battleship */]();
+    e3.x = 2000;
+    e3.y = 1000;
+    e3.team = "enemy";
+    ships.addChild(e3);
+}
+function update() {
+    ships.children.forEach(function (ship) {
+        ship.update();
+    });
+    projectiles.children.forEach(function (projectile) {
+        projectile.update();
+        ships.children.forEach(function (ship) {
+            if (ship.team != projectile.team) {
+                if (__WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__["a" /* checkCollision */](ship, projectile)) {
+                    projectile.collision(ship);
+                }
+            }
+        });
+    });
+    for (let i = 0; i < ships.children.length; i++) {
+        for (var j = i + 1; j < ships.children.length; j++) {
+            if (__WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__["a" /* checkCollision */](ships.children[i], ships.children[j])) {
+                __WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__["b" /* resolveCollision */](ships.children[i], ships.children[j]); //might not be completely fair
+                if (ships.children[i].team != ships.children[j].team) {
+                    ships.children[i].takeDamage(ships.children[j].ramDamage * __WEBPACK_IMPORTED_MODULE_2__utils_time_js__["b" /* deltaTime */]);
+                    ships.children[j].takeDamage(ships.children[i].ramDamage * __WEBPACK_IMPORTED_MODULE_2__utils_time_js__["b" /* deltaTime */]);
+                }
+            }
+        }
+    }
+}
+
+/***/ }),
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -39790,69 +39892,6 @@ function updateDelta(){
   prev = now;
 }
 
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return map; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ships; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return projectiles; });
-/* harmony export (immutable) */ __webpack_exports__["a"] = init;
-/* harmony export (immutable) */ __webpack_exports__["d"] = update;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_time_js__ = __webpack_require__(1);
-
-
-
-
-var map;
-var ships;
-var projectiles;
-
-function init(stage) {
-    map = new PIXI.Container();
-    stage.addChild(map);
-    ships = new PIXI.Container();
-    projectiles = new PIXI.Container();
-    var spacebg = new PIXI.extras.TilingSprite(PIXI.loader.resources["images/backgrounds/1.jpg"].texture, 20000, 20000);
-    spacebg.x = -20000;
-    spacebg.y = -20000;
-    spacebg.scale.x = 2;
-    spacebg.scale.y = 2;
-    map.addChild(spacebg);
-    map.addChild(projectiles);
-    map.addChild(ships);
-}
-function update() {
-    ships.children.forEach(function (ship) {
-        ship.update();
-    });
-    projectiles.children.forEach(function (projectile) {
-        projectile.update();
-        ships.children.forEach(function (ship) {
-            if(ship.team != projectile.team){
-                if(__WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__["a" /* checkCollision */](ship, projectile)){
-                    projectile.collision(ship);
-                }
-            }
-        });
-    });
-    for (let i = 0; i < ships.children.length; i++) {
-        for (var j = i + 1; j < ships.children.length; j++) {
-            if (__WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__["a" /* checkCollision */](ships.children[i], ships.children[j])) {
-                __WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__["b" /* resolveCollision */](ships.children[i], ships.children[j]); //might not be completely fair
-                if (ships.children[i].team != ships.children[j].team) {
-                    ships.children[i].takeDamage(ships.children[j].ramDamage * __WEBPACK_IMPORTED_MODULE_2__utils_time_js__["b" /* deltaTime */]);
-                    ships.children[j].takeDamage(ships.children[i].ramDamage * __WEBPACK_IMPORTED_MODULE_2__utils_time_js__["b" /* deltaTime */]);
-                }
-            }
-        }
-    }
-}
 
 /***/ }),
 /* 3 */
@@ -39898,53 +39937,12 @@ function resolveCollision(a, b) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-const BORDER = 10;
-/* harmony export (immutable) */ __webpack_exports__["c"] = BORDER;
-
-const SCROLLSPEED = 1000;
-/* harmony export (immutable) */ __webpack_exports__["d"] = SCROLLSPEED;
-
-const MINZOOM = 0.2;
-/* harmony export (immutable) */ __webpack_exports__["a"] = MINZOOM;
-
-const MAXZOOM = 1.5;
-/* harmony export (immutable) */ __webpack_exports__["b"] = MAXZOOM;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__weapon_js__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__projectiles_js__ = __webpack_require__(12);
-
-
-
-class RocketLauncher extends __WEBPACK_IMPORTED_MODULE_0__weapon_js__["a" /* Weapon */]{
-    constructor(parent){
-        super(parent);
-        this.cooldown = 0.25;
-        this.range = 100;
-        this.projectile = __WEBPACK_IMPORTED_MODULE_1__projectiles_js__["a" /* Rocket */];
-    }
-
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = RocketLauncher;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_time_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gamestate_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__healthbar_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_time_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gamestate_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__healthbar_js__ = __webpack_require__(14);
 
 
 
@@ -39958,6 +39956,7 @@ class Ship extends PIXI.Container {
     this.addChild(this.sprite);
     this.sprite.anchor.x = 0.5;
     this.sprite.anchor.y = 0.5;
+    this.interactive = true;
     this.size = 120.0; // radius
     this.angle = 0.0;
     this.angularVelocity = 0.0;
@@ -39970,7 +39969,7 @@ class Ship extends PIXI.Container {
     this.hasDest = false;
     this.cruise = false;
     this.cruiseStarting = false;
-    this.maxhealth = 1000.0;
+    this.maxHealth = 1000.0;
     this.health = 1000.0;
     this.ramDamage = 50.0;
     this.weapons = [];
@@ -39978,6 +39977,7 @@ class Ship extends PIXI.Container {
     this.healthBar = new __WEBPACK_IMPORTED_MODULE_4__healthbar_js__["a" /* HealthBar */](this);
     this.team = "neutral";
     this.addChild(this.healthBar);
+
   }
 
   move(x, y) {
@@ -40078,7 +40078,7 @@ class Ship extends PIXI.Container {
     }
   }
   kill(){
-    __WEBPACK_IMPORTED_MODULE_3__gamestate_js__["b" /* ships */].removeChild(this);
+    __WEBPACK_IMPORTED_MODULE_3__gamestate_js__["e" /* ships */].removeChild(this);
   }
 
   update() {
@@ -40125,82 +40125,93 @@ class Ship extends PIXI.Container {
 
 
 /***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = load;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__projectile_js__ = __webpack_require__(15);
+
+
+
+var resources;
+function load(loader) {
+    resources = loader.resources;
+    loader.add("Rocket", "images/projectiles/rocket.png");
+}
+
+class Rocket extends __WEBPACK_IMPORTED_MODULE_1__projectile_js__["a" /* Projectile */]{
+    constructor(team){  
+        super(resources["Rocket"].texture);
+        this.team = team;
+        this.damage = 100;
+        this.range = 100;
+        this.velocity = 20;
+    }
+    collision(ship){
+        if(this.team != ship.team){
+            ship.takeDamage(this.damage);
+            this.kill();
+        }
+    }
+
+}
+/* harmony export (immutable) */ __webpack_exports__["b"] = Rocket;
+
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = load;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ship_js__ = __webpack_require__(4);
+
+
+var resources;
+function load(loader) {
+    resources = loader.resources;
+    loader.add("Battleship", "images/ships/Human-Battleship.png");
+}
+class Battleship extends __WEBPACK_IMPORTED_MODULE_0__ship_js__["a" /* Ship */] {
+
+    constructor() {
+        super(resources["Battleship"].texture);
+        this.size = 120.0; // radius
+        this.acceleration = 40.0;
+        this.maxVelocity = 100.0;
+        this.minVelocity = -25.0;
+        this.maxHealth = 2000;
+        this.health = 2000;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["b"] = Battleship;
+
+
+/***/ }),
 /* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = init;
-/* harmony export (immutable) */ __webpack_exports__["b"] = update;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_time_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__weapon_js__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__projectiles_js__ = __webpack_require__(5);
 
 
 
-function init(renderer) {
-  document.addEventListener("wheel", function (event) {
-    var map = __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["c" /* map */];
-    let zoomIn = event.deltaY < 0; //simplified
-    let zoomFactor;
-    if (zoomIn) {
-      zoomFactor = 1.1;
-    } else {
-      zoomFactor = (1 / 1.1);
+class RocketLauncher extends __WEBPACK_IMPORTED_MODULE_0__weapon_js__["a" /* Weapon */]{
+    constructor(parent){
+        super(parent);
+        this.cooldown = 0.25;
+        this.range = 100;
+        this.projectile = __WEBPACK_IMPORTED_MODULE_1__projectiles_js__["b" /* Rocket */];
     }
-    let original = map.scale.x;
-    //zoom
-    map.scale.x *= zoomFactor;
-    map.scale.y *= zoomFactor;
-    //restrict zoom
-    map.scale.x = Math.max(__WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["a" /* MINZOOM */], map.scale.x);
-    map.scale.x = Math.min(__WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["b" /* MAXZOOM */], map.scale.x);
-    map.scale.y = Math.max(__WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["a" /* MINZOOM */], map.scale.y);
-    map.scale.y = Math.min(__WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["b" /* MAXZOOM */], map.scale.y);
 
-    zoomFactor = map.scale.x / original;
-    //center on cursor
-    map.x -= (window.innerWidth / 2 - map.x) * (zoomFactor - 1);
-    map.y -= (window.innerHeight / 2 - map.y) * (zoomFactor - 1);
-
-    correct();
-
-    event.preventDefault();
-  }, false);
-
-  function correct() {
-    var map = __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["c" /* map */];
-
-    //keep aspect ratio
-    if (map.scale.y != map.scale.x) {
-      map.scale.x = Math.max(map.scale.x, map.scale.y);
-      map.scale.y = Math.max(map.scale.x, map.scale.y);
-    }
-  }
 }
-function update(renderer) {
-  var map = __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["c" /* map */];
-  if (renderer.plugins.interaction.eventData.data) {
-    let mouseLocation = renderer.plugins.interaction.eventData.data.global;
-    if (mouseLocation.x < 0 ||
-      mouseLocation.x > window.innerWidth ||
-      mouseLocation.y < 0 ||
-      mouseLocation.y > window.innerHeight) {
-      return;
-    }
-    if (mouseLocation.x < __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["c" /* BORDER */]) {
-      map.x += map.scale.x * __WEBPACK_IMPORTED_MODULE_1__utils_time_js__["b" /* deltaTime */] * __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["d" /* SCROLLSPEED */];
-    }
-    if (mouseLocation.x > window.innerWidth - __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["c" /* BORDER */]) {
-      map.x -= map.scale.x * __WEBPACK_IMPORTED_MODULE_1__utils_time_js__["b" /* deltaTime */] * __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["d" /* SCROLLSPEED */];
-    }
-    if (mouseLocation.y < __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["c" /* BORDER */]) {
-      map.y += map.scale.y * __WEBPACK_IMPORTED_MODULE_1__utils_time_js__["b" /* deltaTime */] * __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["d" /* SCROLLSPEED */];
-    }
-    if (mouseLocation.y > window.innerHeight - __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["c" /* BORDER */]) {
-      map.y -= map.scale.y * __WEBPACK_IMPORTED_MODULE_1__utils_time_js__["b" /* deltaTime */] * __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["d" /* SCROLLSPEED */];
-    }
-  }
-}
+/* harmony export (immutable) */ __webpack_exports__["a"] = RocketLauncher;
+
 
 /***/ }),
 /* 8 */
@@ -40255,11 +40266,203 @@ function key(keyCode) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return elements; });
+
+const BORDER = 10;
+/* harmony export (immutable) */ __webpack_exports__["c"] = BORDER;
+
+const SCROLLSPEED = 1000;
+/* harmony export (immutable) */ __webpack_exports__["d"] = SCROLLSPEED;
+
+const MINZOOM = 0.2;
+/* harmony export (immutable) */ __webpack_exports__["a"] = MINZOOM;
+
+const MAXZOOM = 1.5;
+/* harmony export (immutable) */ __webpack_exports__["b"] = MAXZOOM;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = init;
-/* harmony export (immutable) */ __webpack_exports__["d"] = update;
+/* harmony export (immutable) */ __webpack_exports__["b"] = update;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_time_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__keyboard_js__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__game_ship_js__ = __webpack_require__(4);
+
+
+
+
+
+
+var keyW = __WEBPACK_IMPORTED_MODULE_3__keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_3__keyboard_js__["b" /* keyCode */]("W"));
+var keyA = __WEBPACK_IMPORTED_MODULE_3__keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_3__keyboard_js__["b" /* keyCode */]("A"));
+var keyS = __WEBPACK_IMPORTED_MODULE_3__keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_3__keyboard_js__["b" /* keyCode */]("S"));
+var keyD = __WEBPACK_IMPORTED_MODULE_3__keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_3__keyboard_js__["b" /* keyCode */]("D"));
+var keyX = __WEBPACK_IMPORTED_MODULE_3__keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_3__keyboard_js__["b" /* keyCode */]("X"));
+var keyQ = __WEBPACK_IMPORTED_MODULE_3__keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_3__keyboard_js__["b" /* keyCode */]("Q"));
+var keyE = __WEBPACK_IMPORTED_MODULE_3__keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_3__keyboard_js__["b" /* keyCode */]("E"));
+var keyF = __WEBPACK_IMPORTED_MODULE_3__keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_3__keyboard_js__["b" /* keyCode */]("F"));
+var keyZ = __WEBPACK_IMPORTED_MODULE_3__keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_3__keyboard_js__["b" /* keyCode */]("Z"));
+var keyShift = __WEBPACK_IMPORTED_MODULE_3__keyboard_js__["a" /* key */](16);
+var keyF11 = __WEBPACK_IMPORTED_MODULE_3__keyboard_js__["a" /* key */](122);
+
+var targeting = false;
+
+
+function init(renderer, stage) {
+  document.addEventListener("wheel", function (event) {
+    var map = __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["g" /* map */];
+    let zoomIn = event.deltaY < 0; //simplified
+    let zoomFactor;
+    if (zoomIn) {
+      zoomFactor = 1.1;
+    } else {
+      zoomFactor = (1 / 1.1);
+    }
+    let original = map.scale.x;
+    //zoom
+    map.scale.x *= zoomFactor;
+    map.scale.y *= zoomFactor;
+    //restrict zoom
+    map.scale.x = Math.max(__WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["a" /* MINZOOM */], map.scale.x);
+    map.scale.x = Math.min(__WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["b" /* MAXZOOM */], map.scale.x);
+    map.scale.y = Math.max(__WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["a" /* MINZOOM */], map.scale.y);
+    map.scale.y = Math.min(__WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["b" /* MAXZOOM */], map.scale.y);
+
+    zoomFactor = map.scale.x / original;
+    //center on cursor
+    map.x -= (window.innerWidth / 2 - map.x) * (zoomFactor - 1);
+    map.y -= (window.innerHeight / 2 - map.y) * (zoomFactor - 1);
+
+    correct();
+
+    event.preventDefault();
+  }, false);
+
+  function correct() {
+    var map = __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["g" /* map */];
+
+    //keep aspect ratio
+    if (map.scale.y != map.scale.x) {
+      map.scale.x = Math.max(map.scale.x, map.scale.y);
+      map.scale.y = Math.max(map.scale.x, map.scale.y);
+    }
+  }
+  keyA.press = function (event) {
+    __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].rotateLeft();
+  };
+  keyA.release = function (event) {
+    __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].stopRotation();
+  };
+  keyD.press = function (event) {
+    __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].rotateRight();
+  };
+  keyD.release = function (event) {
+    __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].stopRotation();
+  };
+  keyX.press = function (event) {
+    __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].stop();
+  };
+  keyShift.press = function (event) {
+    __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].toggleCruise();
+  };
+  keyF11.press = function (event) {
+    if (document.body.requestFullscreen) {
+      document.body.requestFullscreen();
+    } else if (document.body.webkitRequestFullscreen) {
+      document.body.webkitRequestFullscreen();
+    } else if (document.body.mozRequestFullScreen) {
+      document.body.mozRequestFullScreen();
+    } else if (document.body.msRequestFullscreen) {
+      document.body.msRequestFullscreen();
+    }
+    renderer.resize(window.innerWidth, window.innerHeight);
+
+  };
+  keyF.press = function (event) {
+    targeting = !targeting;
+  };
+  stage.click = function (event) {
+    if (targeting) {
+      var location = event.data.getLocalPosition(__WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["g" /* map */]);
+      __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].fireAtNearest(); 
+      targeting = false;
+    }
+  };
+  __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["e" /* ships */].interactive = true;
+  __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["e" /* ships */].click = function (event) {
+    console.log("ship clicked");
+    if (targeting) {
+      __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].fireAt(event.target);
+      targeting = false;
+    }
+    event.stopPropagation();
+  };
+  stage.rightclick = function (event) {
+    var location = event.data.getLocalPosition(__WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["g" /* map */]);
+    __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].move(location.x, location.y);
+    targeting = false;
+  };
+  keyZ.press = function (event) {
+    targeting = false;
+    __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].stopFiring();
+  };
+
+}
+function update(renderer, stage) {
+  var map = __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["g" /* map */];
+  if (renderer.plugins.interaction.eventData.data) {
+    let mouseLocation = renderer.plugins.interaction.eventData.data.global;
+    if (mouseLocation.x < 0 ||
+      mouseLocation.x > window.innerWidth ||
+      mouseLocation.y < 0 ||
+      mouseLocation.y > window.innerHeight) {
+      return;
+    }
+    if (mouseLocation.x < __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["c" /* BORDER */]) {
+      map.x += map.scale.x * __WEBPACK_IMPORTED_MODULE_1__utils_time_js__["b" /* deltaTime */] * __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["d" /* SCROLLSPEED */];
+    }
+    if (mouseLocation.x > window.innerWidth - __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["c" /* BORDER */]) {
+      map.x -= map.scale.x * __WEBPACK_IMPORTED_MODULE_1__utils_time_js__["b" /* deltaTime */] * __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["d" /* SCROLLSPEED */];
+    }
+    if (mouseLocation.y < __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["c" /* BORDER */]) {
+      map.y += map.scale.y * __WEBPACK_IMPORTED_MODULE_1__utils_time_js__["b" /* deltaTime */] * __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["d" /* SCROLLSPEED */];
+    }
+    if (mouseLocation.y > window.innerHeight - __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["c" /* BORDER */]) {
+      map.y -= map.scale.y * __WEBPACK_IMPORTED_MODULE_1__utils_time_js__["b" /* deltaTime */] * __WEBPACK_IMPORTED_MODULE_0__utils_settings_js__["d" /* SCROLLSPEED */];
+    }
+  }
+  map.parent.cursor = targeting ? "crosshair" : "default";
+  if (keyW.isDown) {
+    __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].forward();
+  }
+  if (keyS.isDown) {
+    __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].reverse();
+  }
+  if (keyQ.isDown) {
+    __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].strafeLeft();
+  }
+  if (keyE.isDown) {
+    __WEBPACK_IMPORTED_MODULE_2__game_gamestate_js__["f" /* player */].strafeRight();
+  }
+}
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export elements */
+/* harmony export (immutable) */ __webpack_exports__["a"] = init;
+/* harmony export (immutable) */ __webpack_exports__["b"] = update;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game_gamestate_js__ = __webpack_require__(1);
+
 
 var elements;
 var style = new PIXI.TextStyle({
@@ -40271,6 +40474,27 @@ function init(stage) {
     elements = new PIXI.Container();
     
     stage.addChild(elements);
+    elements.addChild(
+    new TextElement()
+    .setUpdate(function () {
+      this.text = (`Cruise: ${__WEBPACK_IMPORTED_MODULE_1__game_gamestate_js__["f" /* player */].cruise?"on":"off"}`);
+    })
+    .location(30, 30)
+  );
+  elements.addChild(
+    new TextElement()
+    .setUpdate(function () {
+      this.text = (`Weapons: ${__WEBPACK_IMPORTED_MODULE_1__game_gamestate_js__["f" /* player */].firing?"on":"off"}`);
+    })
+    .location(30, 60)
+  );
+    elements.addChild(
+    new TextElement()
+    .setUpdate(function () {
+      this.text = (`Speed: ${__WEBPACK_IMPORTED_MODULE_1__game_gamestate_js__["f" /* player */].velocity.toFixed(1)}`);
+    })
+    .location(30, 90)
+  );
 }
 function update(){
     elements.children.forEach(function(elem){
@@ -40291,7 +40515,7 @@ class TextElement extends PIXI.Text{
         return this;
     }
 }
-/* harmony export (immutable) */ __webpack_exports__["c"] = TextElement;
+/* unused harmony export TextElement */
 
 class ImageElement extends PIXI.Sprite{
     constructor(texture){
@@ -40312,7 +40536,7 @@ class ImageElement extends PIXI.Sprite{
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports) {
 
 var g;
@@ -40339,25 +40563,23 @@ module.exports = g;
 
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_time_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_time_js__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_settings_js__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__input_input_js__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_settings_js__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__input_input_js__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_mathutils_js__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__game_data_weapons_js__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__game_ship_js__ = __webpack_require__(6);
-
-
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__game_data_weapons_js__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__game_data_ships_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__game_data_projectiles_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__ui_gameui_js__ = __webpack_require__(11);
 
 
 
@@ -40401,185 +40623,36 @@ renderer.resize(window.innerWidth, window.innerHeight);
 window.onresize = function (event) {
   renderer.resize(window.innerWidth, window.innerHeight);
 };
-__WEBPACK_IMPORTED_MODULE_4__input_input_js__["a" /* init */](renderer);
+__WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["a" /* load */](PIXI.loader);
+__WEBPACK_IMPORTED_MODULE_8__game_data_ships_js__["a" /* load */](PIXI.loader);
+__WEBPACK_IMPORTED_MODULE_9__game_data_projectiles_js__["a" /* load */](PIXI.loader);
 
-PIXI.loader
-  .add([
-    "images/ships/Human-Battleship.png",
-    "images/ships/Human-Battlecruiser.png",
-    "images/backgrounds/1.jpg",
-    "images/projectiles/rocket.png"
-  ])
-  .load(setup);
+PIXI.loader.load(setup);
 
-
-var player;
-var targeting = false;
-var enemyship;
-var keyW = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["b" /* keyCode */]("W"));
-var keyA = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["b" /* keyCode */]("A"));
-var keyS = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["b" /* keyCode */]("S"));
-var keyD = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["b" /* keyCode */]("D"));
-var keyX = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["b" /* keyCode */]("X"));
-var keyQ = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["b" /* keyCode */]("Q"));
-var keyE = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["b" /* keyCode */]("E"));
-var keyF = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["b" /* keyCode */]("F"));
-var keyZ = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](__WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["b" /* keyCode */]("Z"));
-
-var keyShift = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](16);
-var keyF11 = __WEBPACK_IMPORTED_MODULE_2__input_keyboard_js__["a" /* key */](122);
 
 function setup() {
-  __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["a" /* init */](stage);
-  __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["a" /* init */](stage);
-  player = new __WEBPACK_IMPORTED_MODULE_9__game_ship_js__["a" /* Ship */](PIXI.loader.resources["images/ships/Human-Battleship.png"].texture);
-  player.team = "friendly";
-  player.weapons.push(new __WEBPACK_IMPORTED_MODULE_7__game_data_weapons_js__["a" /* RocketLauncher */](player));
-  __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["b" /* elements */].addChild(
-    new __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["c" /* TextElement */]()
-    .setUpdate(function () {
-      this.text = (`Cruise: ${player.cruise?"on":"off"}`);
-    })
-    .location(30, 30)
-  );
-  __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["b" /* elements */].addChild(
-    new __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["c" /* TextElement */]()
-    .setUpdate(function () {
-      this.text = (`Weapons: ${player.firing?"on":"off"}`);
-    })
-    .location(30, 60)
-  );
-    __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["b" /* elements */].addChild(
-    new __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["c" /* TextElement */]()
-    .setUpdate(function () {
-      this.text = (`Speed: ${player.velocity.toFixed(1)}`);
-    })
-    .location(30, 90)
-  );
-  __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["b" /* ships */].addChild(player);
-  enemyship = new __WEBPACK_IMPORTED_MODULE_9__game_ship_js__["a" /* Ship */](PIXI.loader.resources["images/ships/Human-Battleship.png"].texture);
-  enemyship.x = 1000;
-  enemyship.y = 1000;
-  enemyship.team = "enemy";
-  __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["b" /* ships */].addChild(enemyship);
-  keyA.press = function (event) {
-    player.rotateLeft();
-  };
-  keyA.release = function (event) {
-    player.stopRotation();
-  };
-  keyD.press = function (event) {
-    player.rotateRight();
-  };
-  keyD.release = function (event) {
-    player.stopRotation();
-  };
-  keyX.press = function (event) {
-    player.stop();
-  };
-  keyShift.press = function (event) {
-    player.toggleCruise();
-  };
-  keyF11.press = function (event) {
-    if (document.body.requestFullscreen) {
-      document.body.requestFullscreen();
-    } else if (document.body.webkitRequestFullscreen) {
-      document.body.webkitRequestFullscreen();
-    } else if (document.body.mozRequestFullScreen) {
-      document.body.mozRequestFullScreen();
-    } else if (document.body.msRequestFullscreen) {
-      document.body.msRequestFullscreen();
-    }
-    renderer.resize(window.innerWidth, window.innerHeight);
+  __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["b" /* init */](stage);
+  __WEBPACK_IMPORTED_MODULE_10__ui_gameui_js__["a" /* init */](stage);
+  __WEBPACK_IMPORTED_MODULE_4__input_input_js__["a" /* init */](renderer, stage);
 
-  };
-  keyF.press = function (event) {
-    targeting = !targeting;
-  };
-  stage.click = function (event) {
-    if (targeting) {
-      var location = event.data.getLocalPosition(__WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["c" /* map */]);
-      player.fireAtNearest(); 
-      targeting = false;
-    }
-  };
-  __WEBPACK_IMPORTED_MODULE_9__game_ship_js__["a" /* Ship */].click = function (event) {
-    if (targeting) {
-      player.fireAt(this);
-      targeting = false;
-    }
-    event.stopPropagation();
-  };
-  stage.rightclick = function (event) {
-    var location = event.data.getLocalPosition(__WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["c" /* map */]);
-    player.move(location.x, location.y);
-    targeting = false;
-  };
-  keyZ.press = function (event) {
-    targeting = false;
-    player.stopFiring();
-  };
   requestAnimationFrame(update);
 
 }
 
 function update() {
   __WEBPACK_IMPORTED_MODULE_1__utils_time_js__["a" /* updateDelta */]();
-  __WEBPACK_IMPORTED_MODULE_4__input_input_js__["b" /* update */](renderer);
-  stage.cursor = targeting ? "crosshair" : "default";
-  if (keyW.isDown) {
-    player.forward();
-  }
-  if (keyS.isDown) {
-    player.reverse();
-  }
-  if (keyQ.isDown) {
-    player.strafeLeft();
-  }
-  if (keyE.isDown) {
-    player.strafeRight();
-  }
-  __WEBPACK_IMPORTED_MODULE_8__ui_gameui_js__["d" /* update */]();
+  __WEBPACK_IMPORTED_MODULE_4__input_input_js__["b" /* update */](renderer, stage);
+  
+  __WEBPACK_IMPORTED_MODULE_10__ui_gameui_js__["b" /* update */]();
   requestAnimationFrame(update);
 
-  __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["d" /* update */]();
+  __WEBPACK_IMPORTED_MODULE_6__game_gamestate_js__["c" /* update */]();
 
   renderer.render(stage);
 }
 
 /***/ }),
-/* 12 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__projectile_js__ = __webpack_require__(14);
-
-
-
-class Rocket extends __WEBPACK_IMPORTED_MODULE_1__projectile_js__["a" /* Projectile */]{
-    constructor(team){  
-        super(PIXI.loader.resources["images/projectiles/rocket.png"].texture);
-        this.team = team;
-        this.damage = 100;
-        this.range = 100;
-        this.velocity = 20;
-    }
-    collision(ship){
-        if(this.team != ship.team){
-            ship.takeDamage(this.damage);
-            this.kill();
-        }
-    }
-
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Rocket;
-
-
-
-/***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -40605,22 +40678,22 @@ class HealthBar extends PIXI.Container{
         this.addChild(this.inner);
     }
     update(){
-        this.inner.width = this.parent.health/this.parent.maxhealth * WIDTH;
+        this.inner.width = this.parent.health/this.parent.maxHealth * WIDTH;
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = HealthBar;
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_time_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gamestate_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_time_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gamestate_js__ = __webpack_require__(1);
 
 
 
@@ -40659,22 +40732,22 @@ class Projectile extends PIXI.Sprite {
         this.kill();
     }
     kill(){
-        __WEBPACK_IMPORTED_MODULE_3__gamestate_js__["e" /* projectiles */].removeChild(this);
+        __WEBPACK_IMPORTED_MODULE_3__gamestate_js__["d" /* projectiles */].removeChild(this);
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = Projectile;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__lib_pixi_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_time_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gamestate_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_time_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gamestate_js__ = __webpack_require__(1);
 
 
 
@@ -40689,7 +40762,7 @@ class Weapon {
         this.parent = parent;
         this.range = 100;
     }
- 
+
     fireAtTarget(target) {
         this.fireAt(Math.atan2(target.y - this.parent.y, target.x - this.parent.x));
     }
@@ -40702,23 +40775,23 @@ class Weapon {
         newProjectile.range = this.range;
         newProjectile.team = this.parent.team;
         newProjectile.setDirection(direction);
-        __WEBPACK_IMPORTED_MODULE_3__gamestate_js__["e" /* projectiles */].addChild(newProjectile);
+        __WEBPACK_IMPORTED_MODULE_3__gamestate_js__["d" /* projectiles */].addChild(newProjectile);
     }
     fireAtNearest() {
         var dist = Number.POSITIVE_INFINITY;
         var nearest = null;
-        __WEBPACK_IMPORTED_MODULE_3__gamestate_js__["b" /* ships */].children.forEach(function (ship) {
+        __WEBPACK_IMPORTED_MODULE_3__gamestate_js__["e" /* ships */].children.forEach(function (ship) {
             var currentdist = __WEBPACK_IMPORTED_MODULE_1__utils_mathutils_js__["c" /* dist */](ship, this.parent)
             if (currentdist < dist && ship.team != this.parent.team) {
                 nearest = ship;
                 dist = currentdist;
             }
-            if(nearest){
-                this.fireAtTarget(nearest);
-            }else{
-                return;
-            }
         }, this);
+        if (nearest) {
+            this.fireAtTarget(nearest);
+        } else {
+            return;
+        }
     }
 
     update(target, firing) {

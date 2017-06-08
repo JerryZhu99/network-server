@@ -20,6 +20,6 @@ export class HealthBar extends PIXI.Container{
         this.addChild(this.inner);
     }
     update(){
-        this.inner.width = this.parent.health/this.parent.maxhealth * WIDTH;
+        this.inner.width = this.parent.health/this.parent.maxHealth * WIDTH;
     }
 }
