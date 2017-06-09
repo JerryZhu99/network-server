@@ -1,4 +1,4 @@
-import _ from "./../lib/pixi.js";
+import * as PIXI from "./../lib/pixi.js";
 import * as GameState from "./../game/gamestate.js"
 export var elements;
 var style = new PIXI.TextStyle({

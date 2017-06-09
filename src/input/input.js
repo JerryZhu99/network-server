@@ -2,7 +2,10 @@ import * as Settings from "./../utils/settings.js";
 import * as Time from "./../utils/time.js";
 import * as GameState from "./../game/gamestate.js";
 import * as Keyboard from "./keyboard.js";
-import {Ship} from "./../game/ship.js";
+import * as Network from "./../net/network.js";
+import {
+  Ship
+} from "./../game/ship.js";
 
 var keyW = Keyboard.key(Keyboard.keyCode("W"));
 var keyA = Keyboard.key(Keyboard.keyCode("A"));
@@ -15,11 +18,15 @@ var keyF = Keyboard.key(Keyboard.keyCode("F"));
 var keyZ = Keyboard.key(Keyboard.keyCode("Z"));
 var keyShift = Keyboard.key(16);
 var keyF11 = Keyboard.key(122);
+var keyN = Keyboard.key(Keyboard.keyCode("N"));
 
 var targeting = false;
 
 
 export function init(renderer, stage) {
+  Network.addHandler("stop", (data) => {
+    console.log(data)
+  });
   document.addEventListener("wheel", function (event) {
     var map = GameState.map;
     let zoomIn = event.deltaY < 0; //simplified
@@ -72,6 +79,7 @@ export function init(renderer, stage) {
   };
   keyX.press = function (event) {
     GameState.player.stop();
+    Network.sendMessage("stop", "player stopped");
   };
   keyShift.press = function (event) {
     GameState.player.toggleCruise();
@@ -95,13 +103,12 @@ export function init(renderer, stage) {
   stage.click = function (event) {
     if (targeting) {
       var location = event.data.getLocalPosition(GameState.map);
-      GameState.player.fireAtNearest(); 
+      GameState.player.fireAtNearest();
       targeting = false;
     }
   };
   GameState.ships.interactive = true;
   GameState.ships.click = function (event) {
-    console.log("ship clicked");
     if (targeting) {
       GameState.player.fireAt(event.target);
       targeting = false;
@@ -117,6 +124,9 @@ export function init(renderer, stage) {
     targeting = false;
     GameState.player.stopFiring();
   };
+  keyN.press = function (event) {
+    Network.connect(prompt("Client Id"));
+  }
 
 }
 export function update(renderer, stage) {

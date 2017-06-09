@@ -10,6 +10,11 @@ Object.assign=require('object-assign')
 //app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 
+var ExpressPeerServer = require('peer').ExpressPeerServer;
+
+var server = require('http').Server(app);
+
+
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0',
     mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
@@ -95,6 +100,15 @@ app.get('/pagecount', function (req, res) {
   }
 });
 
+var options = {
+    debug: true
+}
+var peerServer = ExpressPeerServer(server, options);
+app.use('/peerjs', peerServer);
+peerServer.on('connection', function(id) { console.log(`${id} connected`); });
+
+
+
 // error handling
 app.use(function(err, req, res, next){
   console.error(err.stack);
@@ -105,7 +119,7 @@ initDb(function(err){
   console.log('Error connecting to Mongo. Message:\n'+err);
 });
 
-app.listen(port, ip);
+server.listen(port, ip);
 console.log('Server running on http://%s:%s', ip, port);
 
 module.exports = app ;

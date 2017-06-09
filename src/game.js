@@ -1,4 +1,4 @@
-import _ from "./lib/pixi.js";
+import * as PIXI from "./lib/pixi.js";
 
 import * as Time from "./utils/time.js";
 
@@ -15,7 +15,7 @@ import * as Projectiles from "./game/data/projectiles.js";
 
 import * as GameUI from "./ui/gameui.js";
 
-
+import * as Network from "./net/network.js";
 
 var renderer = PIXI.autoDetectRenderer(256, 256);
 
