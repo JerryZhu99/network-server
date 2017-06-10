@@ -1,24 +1,56 @@
-import _ from "./../lib/pixi.js";
-import * as MathUtils from "./../utils/mathutils.js";
-import * as Time from "./../utils/time.js";
+import _ from "lib/pixi.js";
+import * as MathUtils from "utils/mathutils.js";
+import * as Time from "utils/time.js";
+import * as Network from "net/network.js"
 import {
     Ship
-} from "./ship.js";
-import * as Ships from "./data/ships.js";
-import * as Weapons from "./data/weapons.js";
+} from "game/ship.js";
+import * as Ships from "game/data/ships.js";
+import * as Weapons from "game/data/weapons.js";
+
+import * as Scenarios from "game/data/scenarios.js";
 
 export var map;
 export var ships;
 export var projectiles;
 export var player;
+export var players = [];
+
 
 var resources;
 export function load(loader) {
     resources = loader.resources;
     loader.add("Background", "images/backgrounds/1.jpg");
 }
-
+export function addPlayer(id){
+    console.log('new player added');
+    players.push({
+        id: id
+    });
+}
+export function setPlayer(id){
+    player = players.find((p)=>(p.id==id)).ship;
+}
+export function getPlayer(id){
+    return players.find((p)=>(p.id==id)).ship;
+}
 export function init(stage) {
+    Network.addHandler("join game", function(data){
+        console.log("join request received from: "+data);
+        addPlayer(data);
+        players.sort()
+        Scenarios.scenarios["test"].load();
+        console.log("players:" + (players));
+        Network.sendMessage("load scenario", {players:players.map((p)=>(p.id)), scenario:"test"});
+    });
+    Network.addHandler("load scenario", function(data){
+        players = [];
+        for(let playerId of data.players){
+            addPlayer(playerId)
+        }
+        players.sort();
+        Scenarios.scenarios[data.scenario].load();
+    })
     map = new PIXI.Container();
     stage.addChild(map);
     ships = new PIXI.Container();
@@ -32,33 +64,28 @@ export function init(stage) {
     map.addChild(projectiles);
     map.addChild(ships);
 
-    player = new Ships.Battleship();;
-    player.team = "friendly";
-    player.weapons.push(new Weapons.RocketLauncher(player));
-    ships.addChild(player);
-
-
-    var e1 = new Ships.Battleship();
-    e1.x = 1000;
-    e1.y = 1000;
-    e1.team = "enemy";
-    ships.addChild(e1);
-
-    var e2 = new Ships.Battleship();
-    e2.x = 1500;
-    e2.y = 1000;
-    e2.team = "enemy";
-    ships.addChild(e2);
-
-    var e3 = new Ships.Battleship();
-    e3.x = 2000;
-    e3.y = 1000;
-    e3.team = "enemy";
-    ships.addChild(e3);
+    Network.ready(function(){
+        addPlayer(Network.id);
+        (new Scenarios.TestScenario()).load();
+    });
+   
 }
+export function getShip(id){
+    return ships.children.find((ship)=>(ship.id == id))
+
+}
+Network.on("ship update", function(data){
+    var s = getShip(data.id)
+    if(s)s.setData(data);
+});
+var counter = 0;
 export function update() {
     ships.children.forEach(function (ship) {
         ship.update();
+        if(counter++>60 && Network.isServer){
+            counter = 0;
+            Network.send("ship update", ship.getData());
+        }
     });
     projectiles.children.forEach(function (projectile) {
         projectile.update();

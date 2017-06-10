@@ -1,11 +1,11 @@
-import * as Settings from "./../utils/settings.js";
-import * as Time from "./../utils/time.js";
-import * as GameState from "./../game/gamestate.js";
-import * as Keyboard from "./keyboard.js";
-import * as Network from "./../net/network.js";
+import * as Settings from "utils/settings.js";
+import * as Time from "utils/time.js";
+import * as GameState from "game/gamestate.js";
+import * as Keyboard from "input/keyboard.js";
+import * as Network from "net/network.js";
 import {
   Ship
-} from "./../game/ship.js";
+} from "game/ship.js";
 
 var keyW = Keyboard.key(Keyboard.keyCode("W"));
 var keyA = Keyboard.key(Keyboard.keyCode("A"));
@@ -65,24 +65,45 @@ export function init(renderer, stage) {
       map.scale.y = Math.max(map.scale.x, map.scale.y);
     }
   }
+  Network.on("rotate left", function (id) {
+    GameState.getPlayer(id).rotateLeft();
+  });
+  Network.on("stop rotation", function (id) {
+    GameState.getPlayer(id).stopRotation();
+  });
+  Network.on("rotate right", function (id) {
+    GameState.getPlayer(id).rotateRight();
+  });
   keyA.press = function (event) {
     GameState.player.rotateLeft();
+    Network.send("rotate left", Network.id);
   };
+
   keyA.release = function (event) {
     GameState.player.stopRotation();
+    Network.send("stop rotation", Network.id);
   };
   keyD.press = function (event) {
     GameState.player.rotateRight();
+    Network.send("rotate left", Network.id);
   };
   keyD.release = function (event) {
     GameState.player.stopRotation();
+    Network.send("stop rotation", Network.id);
   };
+  Network.on("stop", function (id) {
+    GameState.getPlayer(id).stop();
+  });
   keyX.press = function (event) {
     GameState.player.stop();
-    Network.sendMessage("stop", "player stopped");
+    Network.send("stop", Network.id);
   };
+  Network.on("toggle cruise", function (id) {
+    GameState.getPlayer(id).toggleCruise();
+  });
   keyShift.press = function (event) {
     GameState.player.toggleCruise();
+    Network.send("toggle cruise", Network.id);
   };
   keyF11.press = function (event) {
     if (document.body.requestFullscreen) {
@@ -100,35 +121,67 @@ export function init(renderer, stage) {
   keyF.press = function (event) {
     targeting = !targeting;
   };
+  Network.on("fire at nearest", function (id) {
+    GameState.getPlayer(id).fireAtNearest();
+  });
   stage.click = function (event) {
     if (targeting) {
       var location = event.data.getLocalPosition(GameState.map);
       GameState.player.fireAtNearest();
+      Network.send("fire at nearest", Network.id);
       targeting = false;
     }
   };
+  Network.on("fire at", function (data) {
+    GameState.getPlayer(data.id).fireAt(GameState.getShip(data.target));
+  });
   GameState.ships.interactive = true;
   GameState.ships.click = function (event) {
     if (targeting) {
       GameState.player.fireAt(event.target);
+      Network.send("fire at", {id:Network.id, target:event.target.id});
       targeting = false;
     }
     event.stopPropagation();
   };
+  Network.on("move", function (data) {
+    GameState.getPlayer(data.id).move(data.x, data.y);
+  });
   stage.rightclick = function (event) {
     var location = event.data.getLocalPosition(GameState.map);
     GameState.player.move(location.x, location.y);
+    Network.send("move", {
+      id: Network.id,
+      x: location.x,
+      y: location.y
+    });
     targeting = false;
   };
+  Network.on("stop firing", function (id) {
+    GameState.getPlayer(id).stopFiring();
+  });
   keyZ.press = function (event) {
     targeting = false;
     GameState.player.stopFiring();
+    Network.send("stop firing", Network.id);
   };
   keyN.press = function (event) {
     Network.connect(prompt("Client Id"));
   }
 
 }
+Network.on("forward", function (id) {
+  GameState.getPlayer(id).forward();
+});
+Network.on("reverse", function (id) {
+  GameState.getPlayer(id).reverse();
+});
+Network.on("strafe left", function (id) {
+  GameState.getPlayer(id).strafeLeft();
+});
+Network.on("strafe right", function (id) {
+  GameState.getPlayer(id).strafeRight();
+});
 export function update(renderer, stage) {
   var map = GameState.map;
   if (renderer.plugins.interaction.eventData.data) {
@@ -155,14 +208,18 @@ export function update(renderer, stage) {
   map.parent.cursor = targeting ? "crosshair" : "default";
   if (keyW.isDown) {
     GameState.player.forward();
+    Network.send("forward", Network.id);
   }
   if (keyS.isDown) {
     GameState.player.reverse();
+    Network.send("reverse", Network.id);
   }
   if (keyQ.isDown) {
     GameState.player.strafeLeft();
+    Network.send("strafe left", Network.id);
   }
   if (keyE.isDown) {
     GameState.player.strafeRight();
+    Network.send("strafe right", Network.id);
   }
 }

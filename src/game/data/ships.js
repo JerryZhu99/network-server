@@ -1,6 +1,6 @@
 import {
     Ship
-} from "./../ship.js";
+} from "game/ship.js";
 
 var resources;
 export function load(loader) {

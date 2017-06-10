@@ -1,7 +1,7 @@
-import * as PIXI from "./../lib/pixi.js";
-import * as MathUtils from "./../utils/mathutils.js";
-import * as Time from "./../utils/time.js";
-import * as GameState from "./gamestate.js";
+import * as PIXI from "lib/pixi.js";
+import * as MathUtils from "utils/mathutils.js";
+import * as Time from "utils/time.js";
+import * as GameState from "game/gamestate.js";
 
 export class Weapon {
     constructor(parent) {

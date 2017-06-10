@@ -1,12 +1,20 @@
-import * as PIXI from "./../lib/pixi.js";
-import * as MathUtils from "./../utils/mathutils.js";
-import * as Time from "./../utils/time.js";
-import * as GameState from "./gamestate.js"
-import {HealthBar} from "./healthbar.js"
+import * as PIXI from "lib/pixi.js";
+import * as MathUtils from "utils/mathutils.js";
+import * as Time from "utils/time.js";
+import * as GameState from "game/gamestate.js";
+import * as Network from "net/network.js";
+import {
+  HealthBar
+} from "game/healthbar.js"
+
+Network.on("ship killed", function(id){
+  GameState.getShip(id).kill();
+});
 
 export class Ship extends PIXI.Container {
   constructor(texture) {
     super();
+    this.id = MathUtils.generateId();
     this.sprite = new PIXI.Sprite(texture);
     this.addChild(this.sprite);
     this.sprite.anchor.x = 0.5;
@@ -35,12 +43,28 @@ export class Ship extends PIXI.Container {
     this.ramDamage = 50.0;
     this.weapons = [];
     this.target = null;
-        
+
     this.healthBar = new HealthBar(this);
     this.addChild(this.healthBar);
 
   }
+  getData() {
+    return {
+      id: this.id,
+      angularVelocity: this.angularVelocity,
+      velocity: this.velocity,
+      hasDest: this.hasDest,
+      cruise: this.cruise,
+      cruiseStarting: this.cruiseStarting,
 
+      maxHealth: this.maxHealth,
+      health: this.health,
+      alive: this.alive,
+    }
+  }
+  setData(data) {
+    for (var property in data) this[property] = data[property];
+  }
   move(x, y) {
     this.hasDest = true;
     if (!y) {
@@ -56,7 +80,7 @@ export class Ship extends PIXI.Container {
     this.cruiseStarting = this.cruise;
     this.checkVelocity();
   }
-  stopCruise(){
+  stopCruise() {
     this.cruise = false;
     this.cruiseStarting = false;
   }
@@ -122,23 +146,25 @@ export class Ship extends PIXI.Container {
     this.target = target;
     this.firing = true;
   }
-  fireAtNearest(){
+  fireAtNearest() {
     this.stopCruise();
     this.target = null;
     this.firing = true;
   }
-  stopFiring(){
+  stopFiring() {
     this.target = null;
     this.firing = false;
   }
-  takeDamage(amount){
+  takeDamage(amount) {
     this.stopCruise();
     this.health -= amount;
-    if(this.health <= 0){
-      this.kill();
+    if (this.health <= 0) {
+      this.health = 0;
+      if(Network.isServer)this.kill();
     }
   }
-  kill(){
+  kill() {
+    if(Network.isServer)Network.send("ship killed", this.id);
     GameState.ships.removeChild(this);
     this.alive = false;
   }
@@ -182,4 +208,5 @@ export class Ship extends PIXI.Container {
     }, this);
     this.healthBar.update();
   }
+
 }

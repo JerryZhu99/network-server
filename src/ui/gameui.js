@@ -1,5 +1,5 @@
-import * as PIXI from "./../lib/pixi.js";
-import * as GameState from "./../game/gamestate.js"
+import * as PIXI from "lib/pixi.js";
+import * as GameState from "game/gamestate.js"
 export var elements;
 var style = new PIXI.TextStyle({
         fontFamily: 'Consolas',
@@ -33,6 +33,7 @@ export function init(stage) {
   );
 }
 export function update(){
+    if(!GameState.player)return;
     elements.children.forEach(function(elem){
         if(elem.update)elem.update();
     });

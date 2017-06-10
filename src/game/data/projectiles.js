@@ -1,5 +1,5 @@
-import _ from "./../../lib/pixi.js";
-import {Projectile} from "./../projectile.js";
+import _ from "lib/pixi.js";
+import {Projectile} from "game/projectile.js";
 
 var resources;
 export function load(loader) {
