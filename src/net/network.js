@@ -6,7 +6,7 @@ var peer;
 var connection;
 var onReady;
 
-export var isServer = false;
+export var isServer = true;
 export var id;
 export function init() {
     peer = new Peer({
@@ -42,6 +42,7 @@ export function connect(playerId) {
         console.log("")
         sendMessage("join game", id);
     }, 1000);
+    isServer = false;
     onConnection();
 }
 

@@ -39952,7 +39952,7 @@ var peer;
 var connection;
 var onReady;
 
-var isServer = false;
+var isServer = true;
 var id;
 function init() {
     peer = new Peer({
@@ -39988,6 +39988,7 @@ function connect(playerId) {
         console.log("")
         sendMessage("join game", id);
     }, 1000);
+    isServer = false;
     onConnection();
 }
 
@@ -40607,7 +40608,7 @@ function init(renderer, stage) {
   });
   __WEBPACK_IMPORTED_MODULE_2_game_gamestate_js__["d" /* ships */].interactive = true;
   __WEBPACK_IMPORTED_MODULE_2_game_gamestate_js__["d" /* ships */].click = function (event) {
-    if (targeting) {
+    if (targeting && event.target.team != __WEBPACK_IMPORTED_MODULE_2_game_gamestate_js__["i" /* player */].team) {
       __WEBPACK_IMPORTED_MODULE_2_game_gamestate_js__["i" /* player */].fireAt(event.target);
       __WEBPACK_IMPORTED_MODULE_4_net_network_js__["h" /* send */]("fire at", {id:__WEBPACK_IMPORTED_MODULE_4_net_network_js__["e" /* id */], target:event.target.id});
       targeting = false;

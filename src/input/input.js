@@ -137,7 +137,7 @@ export function init(renderer, stage) {
   });
   GameState.ships.interactive = true;
   GameState.ships.click = function (event) {
-    if (targeting) {
+    if (targeting && event.target.team != GameState.player.team) {
       GameState.player.fireAt(event.target);
       Network.send("fire at", {id:Network.id, target:event.target.id});
       targeting = false;
