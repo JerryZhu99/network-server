@@ -736,10 +736,10 @@ function Peer(id, options) {
   }
   // Set path correctly.
   if (options.path[0] !== '/') {
-    options.path = '/' + options.path;
+  //  options.path = '/' + options.path;
   }
   if (options.path[options.path.length - 1] !== '/') {
-    options.path += '/';
+  //  options.path += '/';
   }
 
   // Set whether we use SSL to same as current host
@@ -831,7 +831,7 @@ Peer.prototype._retrieveId = function(cb) {
   var self = this;
   var http = new XMLHttpRequest();
   var protocol = this.options.secure ? 'https://' : 'http://';
-  var url = protocol + this.options.host + ':' + this.options.port +
+  var url = protocol + this.options.host + this.options.port +
     this.options.path + this.options.key + '/id';
   var queryString = '?ts=' + new Date().getTime() + '' + Math.random();
   url += queryString;
@@ -1157,7 +1157,7 @@ Peer.prototype.listAllPeers = function(cb) {
   var self = this;
   var http = new XMLHttpRequest();
   var protocol = this.options.secure ? 'https://' : 'http://';
-  var url = protocol + this.options.host + ':' + this.options.port +
+  var url = protocol + this.options.host + this.options.port +
     this.options.path + this.options.key + '/peers';
   var queryString = '?ts=' + new Date().getTime() + '' + Math.random();
   url += queryString;
@@ -1213,8 +1213,8 @@ function Socket(secure, host, port, path, key) {
 
   var httpProtocol = secure ? 'https://' : 'http://';
   var wsProtocol = secure ? 'wss://' : 'ws://';
-  this._httpUrl = httpProtocol + host + ':' + port + path + key;
-  this._wsUrl = wsProtocol + host + ':' + port + path + 'peerjs?key=' + key;
+  this._httpUrl = httpProtocol + host + port + path + key;
+  this._wsUrl = wsProtocol + host + port + path + 'peerjs?key=' + key;
 }
 
 util.inherits(Socket, EventEmitter);

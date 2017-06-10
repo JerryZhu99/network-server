@@ -10,9 +10,9 @@ export var isServer = false;
 export var id;
 export function init() {
     peer = new Peer({
-        host: "/",
-        port: "8080",
-        path: "/peerjs"
+        host: window.location.host,
+        port: "",
+        path: "/peerjs/"
     });
 
     console.log(peer);
