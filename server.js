@@ -76,10 +76,10 @@ app.get('/', function (req, res) {
     // Create a document with request IP and current time of request
     col.insert({ip: req.ip, date: Date.now()});
     col.count(function(err, count){
-      res.sendFile(__dirname+'/views/index.html');
+      res.sendFile(__dirname+'/files/index.html');
     });
   } else {
-    res.sendFile(__dirname+'/views/index.html');
+    res.sendFile(__dirname+'/files/index.html');
   }
 });
 

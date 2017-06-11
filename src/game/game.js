@@ -11,6 +11,9 @@ import * as Projectiles from "game/data/projectiles.js";
 import * as GameUI from "ui/gameui.js";
 import * as Network from "net/network.js";
 
+export function connect(id){
+  Network.connect(id);
+}
 export function loadScenario(name){
   GameState.loadScenario(name);
   show();
@@ -26,7 +29,7 @@ export function show(){
 var renderer = PIXI.autoDetectRenderer(256, 256);
 
 //Add the canvas to the HTML document
-document.body.appendChild(renderer.view);
+document.querySelector("#game").appendChild(renderer.view);
 //Create a container object called the `stage`
 var stage = new PIXI.Container();
 stage.interactive = true;
