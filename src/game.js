@@ -1,22 +1,28 @@
 import * as PIXI from "lib/pixi.js";
-
 import * as Time from "utils/time.js";
-
 import * as Keyboard from "input/keyboard.js";
-
 import * as Settings from "utils/settings.js"
-
 import * as Input from "input/input.js";
 import * as MathUtils from "utils/mathutils.js";
 import * as GameState from "game/gamestate.js";
 import * as Weapons from "game/data/weapons.js";
 import * as Ships from "game/data/ships.js";
 import * as Projectiles from "game/data/projectiles.js";
-
 import * as GameUI from "ui/gameui.js";
-
 import * as Network from "net/network.js";
 
+export function loadScenario(name){
+  GameState.loadScenario(name);
+  show();
+}
+export function hide(){
+  Input.deactivate();
+  renderer.view.classList.add("hidden");
+}
+export function show(){
+  Input.activate();
+  renderer.view.classList.remove("hidden");
+}
 var renderer = PIXI.autoDetectRenderer(256, 256);
 
 //Add the canvas to the HTML document

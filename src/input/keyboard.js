@@ -1,3 +1,11 @@
+export var active = true;
+export function activate(){
+  active = true;
+}
+export function deactivate(){
+  active = false;
+}
+
 export function keyCode(keyChar){
   return Number(keyChar.charCodeAt(0));
 }
@@ -10,6 +18,7 @@ export function key(keyCode) {
   key.release = undefined;
   //The `downHandler`
   key.downHandler = function(event) {
+    if(!active) return;
     if (event.keyCode === key.code) {
       if (key.isUp && key.press) key.press();
       key.isDown = true;
@@ -20,6 +29,7 @@ export function key(keyCode) {
 
   //The `upHandler`
   key.upHandler = function(event) {
+    if(!active) return;
     if (event.keyCode === key.code) {
       if (key.isDown && key.release) key.release();
       key.isDown = false;

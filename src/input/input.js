@@ -22,12 +22,22 @@ var keyN = Keyboard.key(Keyboard.keyCode("N"));
 
 var targeting = false;
 
+export var active = true;
+export function activate(){
+  active = true;
+  Keyboard.activate();
+}
+export function deactivate(){
+  active = false;
+  Keyboard.deactivate();
+}
 
 export function init(renderer, stage) {
   Network.addHandler("stop", (data) => {
     console.log(data)
   });
   document.addEventListener("wheel", function (event) {
+    if(!active)return;
     var map = GameState.map;
     let zoomIn = event.deltaY < 0; //simplified
     let zoomFactor;
@@ -183,6 +193,7 @@ Network.on("strafe right", function (id) {
   GameState.getPlayer(id).strafeRight();
 });
 export function update(renderer, stage) {
+  if(!active)return;
   var map = GameState.map;
   if (renderer.plugins.interaction.eventData.data) {
     let mouseLocation = renderer.plugins.interaction.eventData.data.global;

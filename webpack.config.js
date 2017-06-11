@@ -9,7 +9,9 @@ module.exports = {
   },
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'files')
+    path: path.resolve(__dirname, 'files'),
+    libraryTarget: "var",
+    library: "game"
   },
   devtool: 'source-map'
 
