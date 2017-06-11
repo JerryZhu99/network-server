@@ -1,3 +1,5 @@
 <div>
-    <button ng-click="startGame()">Test</button>
+    <button class="btn btn-success" ng-click="startGame()">Start</button>
+    <button class="btn btn-success" ng-click="makePublic()">Make Public</button>
+    <button class="btn btn-success" ng-click="connect(peer)" ng-repeat="peer in peers">{{peer}}</button>
 </div>

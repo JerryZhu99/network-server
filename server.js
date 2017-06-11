@@ -13,6 +13,7 @@ app.use(morgan('combined'))
 var ExpressPeerServer = require('peer').ExpressPeerServer;
 
 var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
@@ -69,8 +70,8 @@ app.get('*',function(req, res, next){
   }
   next();
 });
-
-app.get('/', function (req, res) {
+var routes = ['/','/lobby','/outcome']
+app.get(routes, function (req, res) {
   if (db) {
     var col = db.collection('counts');
     // Create a document with request IP and current time of request
@@ -105,9 +106,25 @@ var options = {
 }
 var peerServer = ExpressPeerServer(server, options);
 app.use('/peerjs', peerServer);
-peerServer.on('connection', function(id) { console.log(`${id} connected`); });
 
+peerServer.on('connection', function(id) {
+   console.log(`${id} connected`); 
+});
 
+var connected = [];
+io.on('connection', function(socket){
+  socket.emit('peers', connected);
+  var id;
+  socket.on('peer id', function(data){
+    id = data;
+    connected.push(id);
+    socket.broadcast.emit('peer', id);
+    console.log("public:" + id);
+  });
+  socket.on('disconnect', function(){
+    connected.splice(connected.indexOf(id), 1)
+  });
+});
 
 // error handling
 app.use(function(err, req, res, next){

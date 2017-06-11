@@ -11,9 +11,8 @@ import * as Projectiles from "game/data/projectiles.js";
 import * as GameUI from "ui/gameui.js";
 import * as Network from "net/network.js";
 
-export function connect(id){
-  Network.connect(id);
-}
+export var network = Network;
+
 export function loadScenario(name){
   GameState.loadScenario(name);
   show();

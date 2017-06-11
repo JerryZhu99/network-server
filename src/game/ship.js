@@ -51,6 +51,9 @@ export class Ship extends PIXI.Container {
   getData() {
     return {
       id: this.id,
+      x:this.x,
+      y:this.y,
+      angle:this.angle,
       angularVelocity: this.angularVelocity,
       velocity: this.velocity,
       hasDest: this.hasDest,
