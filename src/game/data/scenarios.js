@@ -14,8 +14,8 @@ class Scenario {
 export class TestScenario extends Scenario {
     load() {
         super.load();
-        for(var player in GameState.players) {
-            var playerObj = GameState.players[player];
+        for(var player in Network.players) {
+            var playerObj = Network.players[player];
             var ship = new Ships.Battleship();
             ship.team = "friendly";
             ship.weapons.push(new Weapons.RocketLauncher(ship));
@@ -23,7 +23,7 @@ export class TestScenario extends Scenario {
             playerObj.ship = ship;
             ship.id = playerObj.id;
         }
-        console.log(GameState.players);
+        console.log(Network.players);
 
         GameState.setPlayer(Network.id);
 

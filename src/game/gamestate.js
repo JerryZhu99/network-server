@@ -14,44 +14,21 @@ export var map;
 export var ships;
 export var projectiles;
 export var player;
-export var players = [];
-
 
 var resources;
 export function load(loader) {
     resources = loader.resources;
     loader.add("Background", "images/backgrounds/1.jpg");
 }
-export function addPlayer(id) {
-    console.log('new player added');
-    players.push({
-        id: id
-    });
-}
+
 export function setPlayer(id) {
-    player = players.find((p) => (p.id == id)).ship;
+    player = getPlayer(id);
 }
 export function getPlayer(id) {
-    return players.find((p) => (p.id == id)).ship;
+    return Network.players.find((p) => (p.id == id)).ship;
 }
 export function init(stage) {
-    Network.addHandler("join game", function (data) {
-        console.log("join request received from: " + data);
-        addPlayer(data);
-        players.sort()
-        Scenarios.scenarios["test"].load();
-        console.log("players:" + (players));
-        Network.sendMessage("load scenario", {
-            players: players.map((p) => (p.id)),
-            scenario: "test"
-        });
-    });
     Network.addHandler("load scenario", function (data) {
-        players = [];
-        for (let playerId of data.players) {
-            addPlayer(playerId)
-        }
-        players.sort();
         Scenarios.scenarios[data.scenario].load();
     })
     map = new PIXI.Container();
@@ -68,7 +45,6 @@ export function init(stage) {
     map.addChild(ships);
 
     Network.ready(function () {
-        addPlayer(Network.id);
         (new Scenarios.TestScenario()).load();
     });
 }
@@ -76,7 +52,6 @@ export function loadScenario(name) {
     if (Network.isServer) {
         Scenarios.scenarios[name].load();
         Network.sendMessage("load scenario", {
-            players: players.map((p) => (p.id)),
             scenario: name
         });
     }
@@ -84,11 +59,13 @@ export function loadScenario(name) {
 
 export function getShip(id) {
     return ships.children.find((ship) => (ship.id == id))
-
 }
 Network.on("ship update", function (data) {
     var s = getShip(data.id)
     if (s) s.setData(data);
+});
+Network.on("ship killed", function(id){
+  GameState.getShip(id).kill();
 });
 var counter = 0;
 export function update() {

@@ -1,11 +1,11 @@
 import _ from "lib/peer.js";
-import * as GameState from "game/gamestate.js";
-
 
 var peer;
 var connection;
 var onReady;
+var onPlayerConnection;
 
+export var players = [];
 export var isServer = true;
 export var id;
 export function init() {
@@ -20,7 +20,16 @@ export function init() {
     peer.on('open', function (myId) {
         id = myId;
         console.log('My peer ID is: ' + id);
-        if(onReady)onReady();
+        players.push({
+            id: id
+        });
+        console.log(players);
+        if (onPlayerConnection) {
+            onPlayerConnection(players)
+        };
+        if (onReady) {
+            onReady()
+        };
     });
     peer.on('error', function (err) {
         console.log(err);
@@ -31,15 +40,29 @@ export function init() {
         connection = conn;
         onConnection();
     });
+    addHandler("players", function (allplayers) {
+        players = allplayers;
+        if (onPlayerConnection) onPlayerConnection(players);
+    });
+    addHandler("join game", function (id) {
+        players.push({
+            id: id
+        });
+        players.sort();
+        Network.send("players", players);
+        if (onPlayerConnection) onPlayerConnection(players);
+    });
 }
-export function ready(callback){
+export function ready(callback) {
     onReady = callback;
+}
+export function playerConnection(callback) {
+    onPlayerConnection = callback;
 }
 export function connect(playerId) {
     connection = peer.connect(playerId);
     console.log("connection");
     setTimeout(function () {
-        console.log("")
         sendMessage("join game", id);
     }, 1000);
     isServer = false;
@@ -63,7 +86,7 @@ function runHandlers(event, data) {
 export function addHandler(event, callback) {
     handlers[event] = callback;
 }
-export function on(event, callback){
+export function on(event, callback) {
     addHandler(event, callback);
 }
 export function sendMessage(event, data) {
@@ -75,6 +98,6 @@ export function sendMessage(event, data) {
         connection.send(obj);
     }
 }
-export function send(event, callback){
+export function send(event, callback) {
     sendMessage(event, callback);
 }

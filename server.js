@@ -70,7 +70,7 @@ app.get('*',function(req, res, next){
   }
   next();
 });
-var routes = ['/','/lobby','/outcome']
+var routes = ['/','/lobby','/game','/outcome']
 app.get(routes, function (req, res) {
   if (db) {
     var col = db.collection('counts');
@@ -113,16 +113,20 @@ peerServer.on('connection', function(id) {
 
 var connected = [];
 io.on('connection', function(socket){
-  socket.emit('peers', connected);
+  console.log(JSON.stringify(connected))
+  socket.emit('lobbies', connected);
   var id;
   socket.on('peer id', function(data){
     id = data;
     connected.push(id);
-    socket.broadcast.emit('peer', id);
-    console.log("public:" + id);
+    socket.broadcast.emit('lobby created', id);
+    console.log("public:" + JSON.stringify(id));
   });
   socket.on('disconnect', function(){
-    connected.splice(connected.indexOf(id), 1)
+    if(id){
+      connected.splice(connected.indexOf(id), 1);
+      socket.broadcast.emit('lobby destroyed', id);
+    }
   });
 });
 

@@ -3,18 +3,29 @@ import * as Time from "utils/time.js";
 import * as Keyboard from "input/keyboard.js";
 import * as Settings from "utils/settings.js"
 import * as Input from "input/input.js";
+import * as Network from "net/network.js";
 import * as MathUtils from "utils/mathutils.js";
 import * as GameState from "game/gamestate.js";
 import * as Weapons from "game/data/weapons.js";
 import * as Ships from "game/data/ships.js";
 import * as Projectiles from "game/data/projectiles.js";
 import * as GameUI from "ui/gameui.js";
-import * as Network from "net/network.js";
 
 export var network = Network;
-
+export var gamestate = GameState;
+export var started = false;
+Network.on("game start", function(name){
+  loadScenario(name);
+});
+export function start(name){
+  if(Network.isServer){
+    loadScenario(name);
+    Network.send("game start", name);
+  }
+}
 export function loadScenario(name){
   GameState.loadScenario(name);
+  started = true;
   show();
 }
 export function hide(){

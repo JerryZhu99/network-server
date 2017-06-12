@@ -7,9 +7,7 @@ import {
   HealthBar
 } from "game/healthbar.js"
 
-Network.on("ship killed", function(id){
-  GameState.getShip(id).kill();
-});
+
 
 export class Ship extends PIXI.Container {
   constructor(texture) {
