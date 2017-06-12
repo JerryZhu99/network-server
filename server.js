@@ -125,7 +125,7 @@ io.on('connection', function(socket){
   socket.on('disconnect', function(){
     if(id){
       connected.splice(connected.indexOf(id), 1);
-      socket.broadcast.emit('lobby destroyed', id);
+      socket.broadcast.broadcast.emit('lobby closed', id);
     }
   });
 });

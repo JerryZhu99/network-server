@@ -94,9 +94,7 @@ __WEBPACK_IMPORTED_MODULE_0_app_app_js__["a" /* app */].controller("gameControll
 
 
 __WEBPACK_IMPORTED_MODULE_0_app_app_js__["a" /* app */].controller("homeController", function($scope, $location){
-    $scope.createLobby = function(){
-        $location.path("lobby");
-    };
+
 });
 
 /***/ }),
@@ -149,6 +147,7 @@ __WEBPACK_IMPORTED_MODULE_0_app_app_js__["a" /* app */].controller("mainControll
     $scope.isServer = function(){
         return game.network.isServer;
     }
+    
     socket.on('lobbies', function(data){
         console.log("all lobbies "+JSON.stringify(data));
         $scope.peers = data;
@@ -159,17 +158,22 @@ __WEBPACK_IMPORTED_MODULE_0_app_app_js__["a" /* app */].controller("mainControll
         $scope.peers.push(data);
         $scope.$apply();
     });
-    socket.on('lobby destroyed', function(data){
-        console.log("lobby destroyed "+JSON.stringify(data));
-        $scope.peers.splice($scope.indexOf(data),1);
+    socket.on('lobby closed', function(data){
+        console.log("lobby closed "+JSON.stringify(data));
+        $scope.peers.splice($scope.peers.indexOf(data),1);
         $scope.$apply();
     });
+    $scope.createLobby = function(name){
+        $scope.lobbyName = name;
+        $location.path("lobby");
+    };
     $scope.makePublic = function(){
-        socket.emit("peer id", {id:game.network.id, name:$scope.name});
+        socket.emit("peer id", {id:game.network.id, name:$scope.lobbyName});
     };
     $scope.connect = function(peer){
         $scope.lobbyName = peer.name;
         $location.path("lobby");
+        game.network.connect(peer.id);
     }
     $scope.$on('$routeChangeStart', function(){
         if($location.path()=="game"){

@@ -20,12 +20,8 @@ export function init() {
     peer.on('open', function (myId) {
         id = myId;
         console.log('My peer ID is: ' + id);
-        players.push({
-            id: id
-        });
-        console.log(players);
         if (onPlayerConnection) {
-            onPlayerConnection(players)
+            onPlayerConnection(players);
         };
         if (onReady) {
             onReady()
@@ -40,16 +36,25 @@ export function init() {
         connection = conn;
         onConnection();
     });
-    addHandler("players", function (allplayers) {
-        players = allplayers;
-        if (onPlayerConnection) onPlayerConnection(players);
-    });
-    addHandler("join game", function (id) {
+
+    addHandler("join game", function (playerId) {
         players.push({
-            id: id
+            id: playerId
         });
         players.sort();
-        Network.send("players", players);
+        console.log("player joined");
+
+        send("player list", players.map((p)=>(p.id)));
+
+        console.log(handlers);
+
+        if (onPlayerConnection){
+            onPlayerConnection(players);
+        }
+    });
+    addHandler("player list", function (allplayers) {
+        players = allplayers.map((p)=>({id:p}));
+    //    console.log("players"+JSON.stringify(allplayers))
         if (onPlayerConnection) onPlayerConnection(players);
     });
 }
@@ -63,7 +68,7 @@ export function connect(playerId) {
     connection = peer.connect(playerId);
     console.log("connection");
     setTimeout(function () {
-        sendMessage("join game", id);
+        send("join game", id);
     }, 1000);
     isServer = false;
     onConnection();
@@ -72,11 +77,12 @@ export function connect(playerId) {
 function onConnection() {
     connection.on('data', function (data) {
         var obj = data;
+    //    console.log("received:"+JSON.stringify(obj));
         runHandlers(obj.event, obj.data);
     });
 }
 
-var handlers = [];
+export var handlers = [];
 
 function runHandlers(event, data) {
     var callback = handlers[event];
@@ -96,6 +102,7 @@ export function sendMessage(event, data) {
             data: data
         };
         connection.send(obj);
+//        console.log("sent:"+JSON.stringify(obj));
     }
 }
 export function send(event, callback) {

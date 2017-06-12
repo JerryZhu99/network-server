@@ -30,6 +30,7 @@ export function getPlayer(id) {
 export function init(stage) {
     Network.addHandler("load scenario", function (data) {
         Scenarios.scenarios[data.scenario].load();
+//        Network.players = data.players;
     })
     map = new PIXI.Container();
     stage.addChild(map);
@@ -45,6 +46,7 @@ export function init(stage) {
     map.addChild(ships);
 
     Network.ready(function () {
+        Network.players.push({id:Network.id});
         (new Scenarios.TestScenario()).load();
     });
 }
@@ -65,7 +67,7 @@ Network.on("ship update", function (data) {
     if (s) s.setData(data);
 });
 Network.on("ship killed", function(id){
-  GameState.getShip(id).kill();
+  getShip(id).kill();
 });
 var counter = 0;
 export function update() {

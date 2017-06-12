@@ -39824,6 +39824,7 @@ function getPlayer(id) {
 function init(stage) {
     __WEBPACK_IMPORTED_MODULE_3_net_network_js__["addHandler"]("load scenario", function (data) {
         __WEBPACK_IMPORTED_MODULE_7_game_data_scenarios_js__["a" /* scenarios */][data.scenario].load();
+//        Network.players = data.players;
     })
     map = new PIXI.Container();
     stage.addChild(map);
@@ -39839,6 +39840,7 @@ function init(stage) {
     map.addChild(ships);
 
     __WEBPACK_IMPORTED_MODULE_3_net_network_js__["ready"](function () {
+        __WEBPACK_IMPORTED_MODULE_3_net_network_js__["players"].push({id:__WEBPACK_IMPORTED_MODULE_3_net_network_js__["id"]});
         (new __WEBPACK_IMPORTED_MODULE_7_game_data_scenarios_js__["b" /* TestScenario */]()).load();
     });
 }
@@ -39859,7 +39861,7 @@ __WEBPACK_IMPORTED_MODULE_3_net_network_js__["on"]("ship update", function (data
     if (s) s.setData(data);
 });
 __WEBPACK_IMPORTED_MODULE_3_net_network_js__["on"]("ship killed", function(id){
-  GameState.getShip(id).kill();
+  getShip(id).kill();
 });
 var counter = 0;
 function update() {
@@ -39931,6 +39933,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["ready"] = ready;
 /* harmony export (immutable) */ __webpack_exports__["playerConnection"] = playerConnection;
 /* harmony export (immutable) */ __webpack_exports__["connect"] = connect;
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "handlers", function() { return handlers; });
 /* harmony export (immutable) */ __webpack_exports__["addHandler"] = addHandler;
 /* harmony export (immutable) */ __webpack_exports__["on"] = on;
 /* harmony export (immutable) */ __webpack_exports__["sendMessage"] = sendMessage;
@@ -39959,12 +39962,8 @@ function init() {
     peer.on('open', function (myId) {
         id = myId;
         console.log('My peer ID is: ' + id);
-        players.push({
-            id: id
-        });
-        console.log(players);
         if (onPlayerConnection) {
-            onPlayerConnection(players)
+            onPlayerConnection(players);
         };
         if (onReady) {
             onReady()
@@ -39979,16 +39978,25 @@ function init() {
         connection = conn;
         onConnection();
     });
-    addHandler("players", function (allplayers) {
-        players = allplayers;
-        if (onPlayerConnection) onPlayerConnection(players);
-    });
-    addHandler("join game", function (id) {
+
+    addHandler("join game", function (playerId) {
         players.push({
-            id: id
+            id: playerId
         });
         players.sort();
-        Network.send("players", players);
+        console.log("player joined");
+
+        send("player list", players.map((p)=>(p.id)));
+
+        console.log(handlers);
+
+        if (onPlayerConnection){
+            onPlayerConnection(players);
+        }
+    });
+    addHandler("player list", function (allplayers) {
+        players = allplayers.map((p)=>({id:p}));
+    //    console.log("players"+JSON.stringify(allplayers))
         if (onPlayerConnection) onPlayerConnection(players);
     });
 }
@@ -40002,7 +40010,7 @@ function connect(playerId) {
     connection = peer.connect(playerId);
     console.log("connection");
     setTimeout(function () {
-        sendMessage("join game", id);
+        send("join game", id);
     }, 1000);
     isServer = false;
     onConnection();
@@ -40011,6 +40019,7 @@ function connect(playerId) {
 function onConnection() {
     connection.on('data', function (data) {
         var obj = data;
+    //    console.log("received:"+JSON.stringify(obj));
         runHandlers(obj.event, obj.data);
     });
 }
@@ -40035,6 +40044,7 @@ function sendMessage(event, data) {
             data: data
         };
         connection.send(obj);
+//        console.log("sent:"+JSON.stringify(obj));
     }
 }
 function send(event, callback) {

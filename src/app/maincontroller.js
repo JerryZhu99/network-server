@@ -15,6 +15,7 @@ app.controller("mainController", function($scope, $location){
     $scope.isServer = function(){
         return game.network.isServer;
     }
+    
     socket.on('lobbies', function(data){
         console.log("all lobbies "+JSON.stringify(data));
         $scope.peers = data;
@@ -25,17 +26,22 @@ app.controller("mainController", function($scope, $location){
         $scope.peers.push(data);
         $scope.$apply();
     });
-    socket.on('lobby destroyed', function(data){
-        console.log("lobby destroyed "+JSON.stringify(data));
-        $scope.peers.splice($scope.indexOf(data),1);
+    socket.on('lobby closed', function(data){
+        console.log("lobby closed "+JSON.stringify(data));
+        $scope.peers.splice($scope.peers.indexOf(data),1);
         $scope.$apply();
     });
+    $scope.createLobby = function(name){
+        $scope.lobbyName = name;
+        $location.path("lobby");
+    };
     $scope.makePublic = function(){
-        socket.emit("peer id", {id:game.network.id, name:$scope.name});
+        socket.emit("peer id", {id:game.network.id, name:$scope.lobbyName});
     };
     $scope.connect = function(peer){
         $scope.lobbyName = peer.name;
         $location.path("lobby");
+        game.network.connect(peer.id);
     }
     $scope.$on('$routeChangeStart', function(){
         if($location.path()=="game"){
