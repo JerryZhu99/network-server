@@ -37,6 +37,7 @@ app.controller("mainController", function($scope, $location){
     };
     $scope.makePublic = function(){
         socket.emit("peer id", {id:game.network.id, name:$scope.lobbyName});
+        $scope.public = true;
     };
     $scope.connect = function(peer){
         $scope.lobbyName = peer.name;

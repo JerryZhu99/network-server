@@ -169,6 +169,7 @@ __WEBPACK_IMPORTED_MODULE_0_app_app_js__["a" /* app */].controller("mainControll
     };
     $scope.makePublic = function(){
         socket.emit("peer id", {id:game.network.id, name:$scope.lobbyName});
+        $scope.public = true;
     };
     $scope.connect = function(peer){
         $scope.lobbyName = peer.name;
@@ -214,6 +215,12 @@ __WEBPACK_IMPORTED_MODULE_0_app_app_js__["a" /* app */].config(function($routePr
     .when('/game', {
       controller:'gameController',
       templateUrl:'files/views/game.html',
+    })
+    .when('/login', {
+      templateUrl:'files/views/login.html',
+    })
+    .when('/register', {
+      templateUrl:'files/views/register.html',
     })
     .otherwise({
       redirectTo:'/'

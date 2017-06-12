@@ -17,6 +17,12 @@ app.config(function($routeProvider, $locationProvider){
       controller:'gameController',
       templateUrl:'files/views/game.html',
     })
+    .when('/login', {
+      templateUrl:'files/views/login.html',
+    })
+    .when('/register', {
+      templateUrl:'files/views/register.html',
+    })
     .otherwise({
       redirectTo:'/'
     });
