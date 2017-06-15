@@ -3,7 +3,6 @@ var path = require('path');
 module.exports = {
   entry: {
     'game':'game/game.js',
-    'app':'app/main.js'
   },
   resolve: {
     modules: [
@@ -11,10 +10,10 @@ module.exports = {
     ]
   },
   output: {
-    filename: '[name]-bundle.js',
+    filename: 'bundle.js',
     path: path.resolve(__dirname, 'files'),
     libraryTarget: "var",
-    library: "[name]"
+    library: "game"
   },
   devtool: 'source-map'
 

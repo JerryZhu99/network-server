@@ -10,6 +10,7 @@ import * as Weapons from "game/data/weapons.js";
 import * as Ships from "game/data/ships.js";
 import * as Projectiles from "game/data/projectiles.js";
 import * as GameUI from "ui/gameui.js";
+import "app/main.js";
 
 export var network = Network;
 export var gamestate = GameState;
@@ -66,12 +67,12 @@ Projectiles.load(PIXI.loader);
 
 PIXI.loader.load(setup);
 
+console.log(Network);
 
 function setup() {
   GameState.init(stage);
   GameUI.init(stage);
   Input.init(renderer, stage);
-  Network.init();
   requestAnimationFrame(update);
 
 }

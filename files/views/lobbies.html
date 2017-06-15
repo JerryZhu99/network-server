@@ -22,21 +22,27 @@
                         Name
                     </th>
                     <th>
+                        User
+                    </th>
+                    <th>
                         ID
                     </th>
                     <th>
                         Connect
                     </th>
                 </tr>
-                <tr ng-repeat="peer in $parent.peers">
+                <tr ng-repeat="lobby in $parent.lobbies">
                     <td>
-                        {{peer.name}}
+                        {{lobby.name}}
                     </td>
                     <td>
-                        {{peer.id}}
+                        {{lobby.username}}
                     </td>
                     <td>
-                        <button class="btn btn-success" ng-click="connect(peer)">Connect</button>
+                        {{lobby.id}}
+                    </td>
+                    <td>
+                        <button class="btn btn-success" ng-click="connect(lobby)">Connect</button>
                     </td>
                 </tr>
             </table>

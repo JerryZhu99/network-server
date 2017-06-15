@@ -44,11 +44,6 @@ export function init(stage) {
     map.addChild(spacebg);
     map.addChild(projectiles);
     map.addChild(ships);
-
-    Network.ready(function () {
-        Network.players.push({id:Network.id});
-        (new Scenarios.TestScenario()).load();
-    });
 }
 export function loadScenario(name) {
     if (Network.isServer) {

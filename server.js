@@ -9,6 +9,7 @@ Object.assign = require('object-assign');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var ExpressPeerServer = require('peer').ExpressPeerServer;
@@ -28,9 +29,11 @@ var sess = {
   resave: false,
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 14
-  }
+  },
+  store: new MongoStore({mongooseConnection:db})
 }
-app.use(session(sess));
+var sessionMiddleware = session(sess);
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(User.createStrategy());
@@ -131,21 +134,25 @@ peerServer.on('connection', function (id) {
   console.log(`${id} connected`);
 });
 
+io.use(function(socket, next){
+  sessionMiddleware(socket.request, {}, next);
+});
 var connected = [];
 io.on('connection', function (socket) {
   console.log(JSON.stringify(connected))
   socket.emit('lobbies', connected);
-  var id;
+  var lobby;
   socket.on('peer id', function (data) {
-    id = data;
-    connected.push(id);
-    socket.broadcast.emit('lobby created', id);
-    console.log("public:" + JSON.stringify(id));
+    lobby = data;
+    lobby.username = socket.request.session.passport.user;
+    connected.push(lobby);
+    socket.broadcast.emit('lobby created', lobby);
+    console.log("public:" + JSON.stringify(lobby));
   });
   socket.on('disconnect', function () {
-    if (id) {
-      connected.splice(connected.indexOf(id), 1);
-      socket.broadcast.broadcast.emit('lobby closed', id);
+    if (lobby) {
+      connected.splice(connected.indexOf(lobby), 1);
+      socket.broadcast.broadcast.emit('lobby closed', lobby);
     }
   });
 });

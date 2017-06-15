@@ -2,7 +2,7 @@ import {
     app
 } from "app/app.js";
 
-app.controller("loginController", function ($scope, $http, $location) {
+app.controller("loginController", function ($scope, $http, $location, Auth) {
     $scope.login = function () {
         $http({
             method: 'POST',
@@ -17,13 +17,14 @@ app.controller("loginController", function ($scope, $http, $location) {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
-        }).then(function (data) {
-            console.log(data.data);
+        }).then(function (response) {
+            console.log(response.data);
 
-            if (!data.data.success) {
-                $scope.error = data.data.error;
+            if (!response.data.success) {
+                $scope.error = response.data.error;
             } else {
-                $scope.$parent.username = data.data.username;
+                $scope.$parent.username = response.data.username;
+                Auth.set(response.data.username);
                 $location.path('/lobbies')
             }
         });
