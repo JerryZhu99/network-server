@@ -2,17 +2,24 @@
     <div class="row">
         <div class="col-xs-12">
             <h1>Login</h1>
-            <form class="form-horizontal" action="/login" method="post">
+            <script type="text/ng-template" id="alert.html">
+                <div ng-transclude></div>
+            </script>
+            <div uib-alert template-url="alert.html" class="alert-danger" close="hideAlert()" ng-show="error">
+                {{error.message}}
+            </div>
+            <form class="form-horizontal" ng-submit="login()">
                 <div class="form-group">
                     <label for="username" class="col-sm-2 control-label">Username</label>
                     <div class="col-sm-10">
-                        <input type="text" name="username" class="form-control" ng-model="username">
+                        <input type="text" name="username" class="form-control" ng-model="formData.username">
                     </div>
+
                 </div>
                 <div class="form-group">
                     <label for="password" class="col-sm-2 control-label">Password</label>
                     <div class="col-sm-10">
-                        <input type="password" name="password" class="form-control" ng-model="password">
+                        <input type="password" name="password" class="form-control" ng-model="formData.password">
                     </div>
                 </div>
                 <div class="form-group">

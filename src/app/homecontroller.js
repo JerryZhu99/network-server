@@ -1,5 +1,5 @@
 import {app} from "app/app.js";
 
-app.controller("homeController", function($scope, $location){
+app.controller("homeController", function($scope, $location, $http){
 
 });

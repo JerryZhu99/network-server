@@ -1,30 +1,41 @@
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
-    ip = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
+  ip = process.env.IP || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 //  OpenShift sample Node application
-var express = require('express'),
-  fs = require('fs'),
-  app = express(),
-  eps = require('ejs'),
-  morgan = require('morgan');
-
-Object.assign = require('object-assign')
-
-//app.engine('html', require('ejs').renderFile);
-app.use(morgan('combined'))
-
+var express = require('express');
+var fs = require('fs');
+var app = express();
+var morgan = require('morgan');
+Object.assign = require('object-assign');
 var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: true }));
-
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var passport = require('passport');
-
+var LocalStrategy = require('passport-local').Strategy;
 var ExpressPeerServer = require('peer').ExpressPeerServer;
-
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-
 var MongoDB = require('./server/mongodb.js');
 var db = MongoDB.db;
 var User = require('./server/user.js');
+//app.use(morgan('combined'))
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(cookieParser())
+var sess = {
+  secret: process.env.COOKIE_SECRET || "cookie secret",
+  saveUninitialized: false,
+  resave: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 14
+  }
+}
+app.use(session(sess));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.get('*', function (req, res, next) {
   if (!db) {
@@ -33,14 +44,24 @@ app.get('*', function (req, res, next) {
   next();
 });
 var routes = [
-  '/',
+  '/lobbies',
   '/lobby',
   '/game',
   '/outcome',
+];
+var publicRoutes = [
+  '',
   '/login',
   '/register'
-]
+];
 app.get(routes, function (req, res) {
+  if(req.user){
+    res.sendFile(__dirname + '/files/index.html');
+  }else{
+    res.redirect('/login');
+  }
+});
+app.get(publicRoutes, function (req, res) {
   res.sendFile(__dirname + '/files/index.html');
 });
 
@@ -50,19 +71,37 @@ app.get('/files/*', function (req, res) {
 app.get('/images/*', function (req, res) {
   res.sendFile(__dirname + "/files" + req.url);
 });
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(User.createStrategy());
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-app.post('/login',
-  passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: true
-  })
-);
+app.post('/login', function (req, res, next) {
+  passport.authenticate('local', function (err, user, info) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.json({
+        error: info
+      });
+    }
+    req.logIn(user, function (err) {
+      if (err) {
+        return res.json({
+          error: 'Could not log in user'
+        });
+      }
+      res.status(200).json({
+        success: true,
+        username: user.username
+      });
+    });
+  })(req, res, next);
+});
+app.post('/logout', function(req, res){
+  req.logOut();
+  res.redirect('/login')
+});
+app.post('/user', function(req, res){
+  res.json({username:req.user?req.user.username:null});
+});
 app.post('/register', function (req, res) {
   User.register(new User({
     username: req.body.username
@@ -72,7 +111,12 @@ app.post('/register', function (req, res) {
     }
 
     passport.authenticate('local')(req, res, function () {
-      res.redirect('/');
+      req.session.save(function (err) {
+        if (err) {
+          res.send(err);
+        }
+        res.redirect('/');
+      });
     });
   });
 });

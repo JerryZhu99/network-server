@@ -1,0 +1,46 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>Lobbies</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="input-group">
+                <input type="text" class="form-control" ng-init="name='Lobby'" ng-model="name" placeholder="name">
+                <span class="input-group-btn">
+                    <button class="btn btn-success" ng-click="createLobby(name)">Create Lobby</button>             
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table">
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Connect
+                    </th>
+                </tr>
+                <tr ng-repeat="peer in $parent.peers">
+                    <td>
+                        {{peer.name}}
+                    </td>
+                    <td>
+                        {{peer.id}}
+                    </td>
+                    <td>
+                        <button class="btn btn-success" ng-click="connect(peer)">Connect</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>

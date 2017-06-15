@@ -1,2 +1,2 @@
 
-export var app = angular.module("app", ['ngRoute']);
+export var app = angular.module("app", ['ngRoute', 'ui.bootstrap']);

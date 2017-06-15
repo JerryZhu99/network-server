@@ -64,11 +64,12 @@ var game =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 21);
+/******/ 	return __webpack_require__(__webpack_require__.s = 24);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
+/* 0 */,
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var require;var require;/*!
@@ -39766,10 +39767,10 @@ global.PIXI = exports; // eslint-disable-line
 
 //# sourceMappingURL=pixi.js.map
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)))
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -39785,15 +39786,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["loadScenario"] = loadScenario;
 /* harmony export (immutable) */ __webpack_exports__["getShip"] = getShip;
 /* harmony export (immutable) */ __webpack_exports__["update"] = update;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_utils_mathutils_js__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_utils_time_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_utils_time_js__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_net_network_js__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_game_ship_js__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_game_data_ships_js__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_game_data_weapons_js__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_game_data_scenarios_js__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_game_data_scenarios_js__ = __webpack_require__(23);
 
 
 
@@ -39896,7 +39897,7 @@ function update() {
 }
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -39920,7 +39921,6 @@ function updateDelta(){
 
 
 /***/ }),
-/* 3 */,
 /* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -39938,7 +39938,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["on"] = on;
 /* harmony export (immutable) */ __webpack_exports__["sendMessage"] = sendMessage;
 /* harmony export (immutable) */ __webpack_exports__["send"] = send;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_peer_js__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_peer_js__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_peer_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lib_peer_js__);
 
 
@@ -40060,7 +40060,7 @@ function send(event, callback) {
 /* harmony export (immutable) */ __webpack_exports__["c"] = checkCollision;
 /* harmony export (immutable) */ __webpack_exports__["d"] = resolveCollision;
 /* harmony export (immutable) */ __webpack_exports__["a"] = generateId;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__);
 
 
@@ -40137,7 +40137,7 @@ class Battleship extends __WEBPACK_IMPORTED_MODULE_0_game_ship_js__["a" /* Ship 
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_game_weapon_js__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_game_weapon_js__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_game_data_projectiles_js__ = __webpack_require__(9);
 
 
@@ -40159,13 +40159,13 @@ class RocketLauncher extends __WEBPACK_IMPORTED_MODULE_0_game_weapon_js__["a" /*
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_utils_mathutils_js__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_utils_time_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_game_gamestate_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_utils_time_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_game_gamestate_js__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_net_network_js__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_game_healthbar_js__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_game_healthbar_js__ = __webpack_require__(25);
 
 
 
@@ -40386,9 +40386,9 @@ class Ship extends __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__["Container"] {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = load;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_game_projectile_js__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_game_projectile_js__ = __webpack_require__(26);
 
 
 
@@ -40503,7 +40503,10 @@ const MAXZOOM = 1.5;
 /* 13 */,
 /* 14 */,
 /* 15 */,
-/* 16 */
+/* 16 */,
+/* 17 */,
+/* 18 */,
+/* 19 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -40513,8 +40516,8 @@ const MAXZOOM = 1.5;
 /* harmony export (immutable) */ __webpack_exports__["c"] = init;
 /* harmony export (immutable) */ __webpack_exports__["d"] = update;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_utils_settings_js__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_utils_time_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_game_gamestate_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_utils_time_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_game_gamestate_js__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_input_keyboard_js__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_net_network_js__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_game_ship_js__ = __webpack_require__(8);
@@ -40754,16 +40757,16 @@ function update(renderer, stage) {
 }
 
 /***/ }),
-/* 17 */
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export elements */
 /* harmony export (immutable) */ __webpack_exports__["a"] = init;
 /* harmony export (immutable) */ __webpack_exports__["b"] = update;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_game_gamestate_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_game_gamestate_js__ = __webpack_require__(2);
 
 
 var elements;
@@ -40839,7 +40842,7 @@ class ImageElement extends __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__["Sprite"]{
 
 
 /***/ }),
-/* 18 */
+/* 21 */
 /***/ (function(module, exports) {
 
 var g;
@@ -40866,15 +40869,15 @@ module.exports = g;
 
 
 /***/ }),
-/* 19 */,
-/* 20 */
+/* 22 */,
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return scenarios; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_game_data_ships_js__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_game_data_weapons_js__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_game_gamestate_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_game_gamestate_js__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_net_network_js__ = __webpack_require__(4);
 
 
@@ -40935,7 +40938,7 @@ scenarios["test"] = new TestScenario();
 
 
 /***/ }),
-/* 21 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -40947,19 +40950,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["loadScenario"] = loadScenario;
 /* harmony export (immutable) */ __webpack_exports__["hide"] = hide;
 /* harmony export (immutable) */ __webpack_exports__["show"] = show;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_utils_time_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_utils_time_js__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_input_keyboard_js__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_utils_settings_js__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_input_input_js__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_input_input_js__ = __webpack_require__(19);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_net_network_js__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_utils_mathutils_js__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_game_gamestate_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_game_gamestate_js__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_game_data_weapons_js__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_game_data_ships_js__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_game_data_projectiles_js__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_ui_gameui_js__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_ui_gameui_js__ = __webpack_require__(20);
 
 
 
@@ -41052,7 +41055,7 @@ function update() {
 
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41085,15 +41088,15 @@ class HealthBar extends PIXI.Container{
 
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_utils_mathutils_js__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_utils_time_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_game_gamestate_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_utils_time_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_game_gamestate_js__ = __webpack_require__(2);
 
 
 
@@ -41139,15 +41142,15 @@ class Projectile extends __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__["Sprite"] {
 
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lib_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lib_pixi_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_utils_mathutils_js__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_utils_time_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_game_gamestate_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_utils_time_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_game_gamestate_js__ = __webpack_require__(2);
 
 
 
@@ -41211,7 +41214,7 @@ class Weapon {
 
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var require;var require;/*! peerjs build:0.3.13, development. Copyright(c) 2013 Michelle Bu <michelle@michellebu.com> */(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return require(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
