@@ -2,7 +2,7 @@ import _ from "lib/peer.js";
 import io from "lib/socket.io";
 
 var peer;
-var connection;
+var connections = [];
 var onReady;
 var onPlayer;
 var onLobby;
@@ -43,7 +43,8 @@ export function init() {
         id = myId;
         console.log('My peer ID is: ' + id);
         players.push({
-            id: id
+            id: id,
+            name: playerName
         });
         if (onPlayer) {
             onPlayer(players);
@@ -58,8 +59,7 @@ export function init() {
     peer.on('connection', function (conn) {
         isServer = true;
         console.log("connection");
-        connection = conn;
-        onConnection();
+        onConnection(conn);
     });
 
     addHandler("join game", function (playerInfo) {
@@ -77,6 +77,7 @@ export function init() {
         if (onPlayer) {
             onPlayer(players);
         }
+        return true;
     });
     addHandler("player list", function (allplayers) {
         players = allplayers.map((p) => ({
@@ -97,23 +98,24 @@ export function lobby(callback) {
 }
 export function setName(name){
     playerName = name;
-    players[Network.id].name = name;
+    if(players[id])players[id].name = name;
 }
 export function makePublic() {
     socket.emit("peer id", this);
     isPublic = true;
 }
 export function connect(playerId) {
-    connection = peer.connect(playerId);
+    var conn = peer.connect(playerId);
     console.log("connection");
     setTimeout(function () {
         send("join game", {id:id, name:playerName});
     }, 1000);
     isServer = false;
-    onConnection();
+    onConnection(conn);
 }
 
-function onConnection() {
+function onConnection(connection) {
+    connections.push(connection);
     connection.on('open', function () {
         console.log("connection open");
         connection.on('error', function (err) {
@@ -121,7 +123,14 @@ function onConnection() {
         });
         connection.on('data', function (data) {
             var obj = data;
-            runHandlers(obj.event, obj.data);
+            var serverOnly = runHandlers(obj.event, obj.data);
+            if(isServer && !serverOnly){ //forward data if server
+                connections.forEach(function(conn){
+                    if(conn != connection){
+                        conn.send(data);
+                    }
+                });
+            }
         });
     })
 }
@@ -129,7 +138,7 @@ function onConnection() {
 
 function runHandlers(event, data) {
     var callback = handlers[event];
-    if (callback) callback(data);
+    if (callback) return callback(data);
 }
 
 export function addHandler(event, callback) {
@@ -139,13 +148,13 @@ export function on(event, callback) {
     addHandler(event, callback);
 }
 export function sendMessage(event, data) {
-    if (connection) {
+    connections.forEach(function(connection){
         var obj = {
             event: event,
             data: data
         };
         connection.send(obj);
-    }
+    });
 }
 export function send(event, callback) {
     sendMessage(event, callback);

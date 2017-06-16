@@ -95,7 +95,7 @@ export function init(renderer, stage) {
   };
   keyD.press = function (event) {
     GameState.player.rotateRight();
-    Network.send("rotate left", Network.id);
+    Network.send("rotate right", Network.id);
   };
   keyD.release = function (event) {
     GameState.player.stopRotation();
