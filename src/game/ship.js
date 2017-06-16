@@ -177,7 +177,6 @@ export default class Ship extends PIXI.Container {
       }
     }
 
-    if (this.cruise) this.firing = false;
     if (this.hasDest) {
       var destAngle = (Math.atan2(this.dest.y - this.y, this.dest.x - this.x) + Math.PI / 2 + 2 * Math.PI) % (2 * Math.PI);
       if (Math.abs(destAngle - this.angle) < this.turnRate * Time.deltaTime || Math.abs(destAngle - this.angle + 2 * Math.PI) < this.turnRate * Time.deltaTime) {
@@ -203,7 +202,7 @@ export default class Ship extends PIXI.Container {
       this.hasDest = false;
     }
     this.weapons.forEach(function (weapon) {
-      weapon.update(this.target, this.firing);
+      weapon.update(this.target, this.firing && !this.cruise);
     }, this);
     this.healthBar.update();
   }

@@ -31,9 +31,9 @@
   "scripts": {
     "prestart": "npm run build",
     "start": "node server.js",
-    "local": "set MONGO_URL=mongodb://127.0.0.1:27017/data&&npm start",
+    "local": "cross-env MONGO_URL=mongodb://127.0.0.1:27017/data npm start",
     "build": "webpack",
-    "test": "IP=0.0.0.0 PORT=3030 mocha --timeout 5000 tests/*_test.js"
+    "test": "cross-env IP=0.0.0.0 PORT=3030 mocha --timeout 5000 tests/*_test.js"
   },
   "repository": {
     "type": "git",
@@ -46,6 +46,7 @@
   },
   "homepage": "http://github.com/openshift/nodejs-ex",
   "devDependencies": {
-    "chai": "^3.5.0"
+    "chai": "^3.5.0",
+    "cross-env": "^5.0.1"
   }
 }

@@ -14,6 +14,7 @@ export var map;
 export var ships;
 export var projectiles;
 export var player;
+var scenario;
 
 var resources;
 export function load(loader) {
@@ -29,7 +30,8 @@ export function getPlayer(id) {
 }
 export function init(stage) {
     Network.addHandler("load scenario", function (data) {
-        Scenarios.scenarios[data.scenario].load();
+        scenario = Scenarios.scenarios[data.scenario]
+        scenario.load();
 //        Network.players = data.players;
     })
     map = new PIXI.Container();
@@ -47,7 +49,8 @@ export function init(stage) {
 }
 export function loadScenario(name) {
     if (Network.isServer) {
-        Scenarios.scenarios[name].load();
+        scenario = Scenarios.scenarios[name];
+        scenario.load();
         Network.sendMessage("load scenario", {
             scenario: name
         });
@@ -94,4 +97,15 @@ export function update() {
             }
         }
     }
+}
+export function checkFinished(callback){
+    var finished = false;
+    if(scenario)finished = scenario.checkFinished();
+    var playersAlive = Network.players.some(function(player){
+        return player.ship.alive;
+    })
+    if(!playersAlive){
+        finished = "failure";
+    }
+    return finished;
 }

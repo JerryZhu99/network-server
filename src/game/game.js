@@ -15,25 +15,33 @@ import "app/main.js";
 export var network = Network;
 export var gamestate = GameState;
 export var started = false;
-Network.on("game start", function(name){
+var finished = false;
+var finish;
+
+Network.on("game start", function (name) {
   loadScenario(name);
 });
-export function start(name){
-  if(Network.isServer){
+export function start(name) {
+  if (Network.isServer) {
     loadScenario(name);
     Network.send("game start", name);
   }
 }
-export function loadScenario(name){
+export function onFinish(callback) {
+  finish = callback;
+}
+export function loadScenario(name) {
   GameState.loadScenario(name);
   started = true;
+  finished = false;
   show();
+  requestAnimationFrame(update);
 }
-export function hide(){
+export function hide() {
   Input.deactivate();
   renderer.view.classList.add("hidden");
 }
-export function show(){
+export function show() {
   Input.activate();
   renderer.view.classList.remove("hidden");
 }
@@ -63,7 +71,7 @@ window.onresize = function (event) {
 };
 GameState.load(PIXI.loader);
 Ships.load(PIXI.loader);
-Weapons.load(PIXI.loader);
+Projectiles.load(PIXI.loader);
 
 PIXI.loader.load(setup);
 
@@ -73,18 +81,31 @@ function setup() {
   GameState.init(stage);
   GameUI.init(stage);
   Input.init(renderer, stage);
-  requestAnimationFrame(update);
 
 }
 
 function update() {
   Time.updateDelta();
   Input.update(renderer, stage);
-  
+
   GameUI.update();
-  requestAnimationFrame(update);
 
   GameState.update();
-
+  if (Network.isServer) {
+    var finishState = GameState.checkFinished(finish);
+    if(finishState)setTimeout(function () {
+      finished = finishState;
+      Network.send("finish", finished);
+    }, 3000);
+  }
+  if (finished) {
+    started = false;
+    if (finish) finish(finished);
+  } else {
+    requestAnimationFrame(update);
+  }
   renderer.render(stage);
 }
+Network.on("finish", function(finishState){
+    finished = finishState;
+})

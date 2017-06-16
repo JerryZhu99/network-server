@@ -12,7 +12,9 @@ export default class Weapon {
         this.parent = parent;
         this.range = 1000;
         this.projectileVelocity = 500;
+        this.projectileSize = 25;
         this.damage = 100;
+        this.projectiles = 1;
     }
 
     fireAtTarget(target) {
@@ -46,13 +48,16 @@ export default class Weapon {
                 if (max <= 0) {
                     this.fireAtTarget(target);
                     return;
-                }else{
+                } else {
                     t = max;
                 }
-            }else{
+            } else {
                 t = min;
             }
-            var predicted = {x:target.x+vx*t, y:target.y+vy*t};
+            var predicted = {
+                x: target.x + vx * t,
+                y: target.y + vy * t
+            };
             this.fireAtTarget(predicted);
         } else {
             this.fireAtTarget(target);
@@ -61,15 +66,21 @@ export default class Weapon {
     fireAt(direction) {
         this.firing = true;
         this.currentTime = this.cooldown;
-        var newProjectile = new this.projectile();
-        newProjectile.x = this.parent.x;
-        newProjectile.y = this.parent.y;
-        newProjectile.range = this.range;
-        newProjectile.team = this.parent.team;
-        newProjectile.velocity = this.projectileVelocity;
-        newProjectile.damage = this.damage;
-        newProjectile.setDirection(direction);
-        GameState.projectiles.addChild(newProjectile);
+        for (var i = 0; i < this.projectiles; i++) {
+            var newProjectile = new this.projectile();
+            this.initProjectile(newProjectile, i, direction);
+            GameState.projectiles.addChild(newProjectile);
+        }
+    }
+    initProjectile(projectile, index, direction) {
+        projectile.x = this.parent.x;
+        projectile.y = this.parent.y;
+        projectile.range = this.range;
+        projectile.team = this.parent.team;
+        projectile.velocity = this.projectileVelocity;
+        projectile.size = this.projectileSize;
+        projectile.damage = this.damage;
+        projectile.setDirection(direction);
     }
     fireAtNearest() {
         var dist = Number.POSITIVE_INFINITY;

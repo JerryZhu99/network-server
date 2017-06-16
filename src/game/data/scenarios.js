@@ -9,6 +9,9 @@ class Scenario {
         GameState.ships.removeChildren();
         GameState.projectiles.removeChildren();
     }
+    checkFinished(){
+        return false;
+    }
 }
 
 export class TestScenario extends Scenario {
@@ -18,7 +21,7 @@ export class TestScenario extends Scenario {
             var playerObj = Network.players[player];
             var ship = new Ships.Battleship();
             ship.team = "friendly";
-            ship.weapons.push(new Weapons.RocketLauncher(ship));
+            ship.weapons.push(new Weapons.Rockets(ship));
             GameState.ships.addChild(ship);
             playerObj.ship = ship;
             ship.id = playerObj.id;
@@ -58,10 +61,11 @@ export class RaidScenario extends Scenario {
             var playerObj = Network.players[i];
             var ship = new Ships.Battleship();
             ship.team = "friendly";
-            ship.x = 1000 + Math.cos(i/length*2*Math.PI)*200;
+            ship.x = 0 + Math.cos(i/length*2*Math.PI)*200;
             ship.y = 1000 + Math.sin(i/length*2*Math.PI)*200;
             ship.angle = (i/length*2*Math.PI);
-            ship.weapons.push(new Weapons.RocketLauncher(ship));
+            ship.weapons.push(new Weapons.Rockets(ship));
+            ship.weapons.push(new Weapons.MachineGun(ship));
             GameState.ships.addChild(ship);
             playerObj.ship = ship;
             ship.id = playerObj.id;
@@ -79,7 +83,7 @@ export class RaidScenario extends Scenario {
             enemy.velocity = 50;
             enemy.firing = true;
             enemy.team = "enemy";
-            enemy.weapons.push(new Weapons.RocketLauncher(enemy));
+            enemy.weapons.push(new Weapons.Rockets(enemy));
             GameState.ships.addChild(enemy);
             enemy.id = "enemy"+i;
         }
@@ -91,6 +95,15 @@ export class RaidScenario extends Scenario {
         transport.team = "enemy";
         GameState.ships.addChild(transport);
         transport.id = "enemy transport";
+        this.transport = transport;
+    }
+    checkFinished(){
+        if(this.transport.alive == false){
+            return "success";
+        }
+        if(this.transport.x < -2000){
+            return "failure"
+        }
     }
 }
 export var scenarios = [];

@@ -10,7 +10,7 @@ export class Battleship extends Ship {
 
     constructor() {
         super(resources["Battleship"].texture);
-        this.size = 120.0; // radius
+        this.size = 110.0; // radius
         this.acceleration = 40.0;
         this.maxVelocity = 100.0;
         this.minVelocity = -25.0;
@@ -22,7 +22,7 @@ export class Frigate extends Ship {
 
     constructor() {
         super(resources["Frigate"].texture);
-        this.size = 120.0; // radius
+        this.size = 100.0; // radius
         this.acceleration = 20.0;
         this.maxVelocity = 100.0;
         this.minVelocity = -25.0;
