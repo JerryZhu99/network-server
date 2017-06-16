@@ -63,7 +63,7 @@ window.onresize = function (event) {
 };
 GameState.load(PIXI.loader);
 Ships.load(PIXI.loader);
-Projectiles.load(PIXI.loader);
+Weapons.load(PIXI.loader);
 
 PIXI.loader.load(setup);
 

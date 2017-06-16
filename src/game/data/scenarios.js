@@ -50,5 +50,49 @@ export class TestScenario extends Scenario {
         e3.id = "e3";
     }
 }
+export class RaidScenario extends Scenario {
+    load() {
+        super.load();
+        var length = Network.players.length
+        for(var i = 0; i < length; i++) {
+            var playerObj = Network.players[i];
+            var ship = new Ships.Battleship();
+            ship.team = "friendly";
+            ship.x = 1000 + Math.cos(i/length*2*Math.PI)*200;
+            ship.y = 1000 + Math.sin(i/length*2*Math.PI)*200;
+            ship.angle = (i/length*2*Math.PI);
+            ship.weapons.push(new Weapons.RocketLauncher(ship));
+            GameState.ships.addChild(ship);
+            playerObj.ship = ship;
+            ship.id = playerObj.id;
+        }
+        console.log(Network.players);
+
+        GameState.setPlayer(Network.id);
+
+        var enemies = 5;
+        for(var i = 0; i < enemies; i++) {
+            var enemy = new Ships.Battleship();
+            enemy.x = 2000 + Math.cos(i/enemies*2*Math.PI) * 500;
+            enemy.y = -2000 + Math.sin(i/enemies*2*Math.PI) * 500;
+            enemy.angle = -Math.PI/2;
+            enemy.velocity = 50;
+            enemy.firing = true;
+            enemy.team = "enemy";
+            enemy.weapons.push(new Weapons.RocketLauncher(enemy));
+            GameState.ships.addChild(enemy);
+            enemy.id = "enemy"+i;
+        }
+        var transport = new Ships.Frigate();
+        transport.x = 2000
+        transport.y = -2000
+        transport.angle = -Math.PI/2;
+        transport.velocity = 50;
+        transport.team = "enemy";
+        GameState.ships.addChild(transport);
+        transport.id = "enemy transport";
+    }
+}
 export var scenarios = [];
 scenarios["test"] = new TestScenario();
+scenarios["raid"] = new RaidScenario();

@@ -4,7 +4,7 @@
 const WIDTH = 200;
 const HEIGHT = 10;
 
-export class HealthBar extends PIXI.Container{
+export default class HealthBar extends PIXI.Container{
     constructor(parent){
         super();
         this.x = -WIDTH/2;

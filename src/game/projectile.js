@@ -2,7 +2,7 @@ import * as PIXI from "lib/pixi.js";
 import * as MathUtils from "utils/mathutils.js";
 import * as Time from "utils/time.js";
 import * as GameState from "game/gamestate.js";
-export class Projectile extends PIXI.Sprite {
+export default class Projectile extends PIXI.Sprite {
     constructor(texture) {
         super(texture);
         this.anchor.x = 0.5;
@@ -25,8 +25,8 @@ export class Projectile extends PIXI.Sprite {
     update(){
         var displacement = this.velocity * Time.deltaTime;
         this.distanceTravelled += displacement;
-        this.x += Math.cos(this.angle) * this.velocity;
-        this.y += Math.sin(this.angle) * this.velocity;
+        this.x += Math.cos(this.angle) * displacement;
+        this.y += Math.sin(this.angle) * displacement;
 
         if(this.distanceTravelled > this.range){
             this.kill();

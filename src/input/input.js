@@ -17,17 +17,18 @@ var keyE = Keyboard.key(Keyboard.keyCode("E"));
 var keyF = Keyboard.key(Keyboard.keyCode("F"));
 var keyZ = Keyboard.key(Keyboard.keyCode("Z"));
 var keyShift = Keyboard.key(16);
+var keySpace = Keyboard.key(32)
 var keyF11 = Keyboard.key(122);
 var keyN = Keyboard.key(Keyboard.keyCode("N"));
 
 var targeting = false;
 
 export var active = true;
-export function activate(){
+export function activate() {
   active = true;
   Keyboard.activate();
 }
-export function deactivate(){
+export function deactivate() {
   active = false;
   Keyboard.deactivate();
 }
@@ -37,7 +38,7 @@ export function init(renderer, stage) {
     console.log(data)
   });
   document.addEventListener("wheel", function (event) {
-    if(!active)return;
+    if (!active) return;
     var map = GameState.map;
     let zoomIn = event.deltaY < 0; //simplified
     let zoomFactor;
@@ -75,6 +76,7 @@ export function init(renderer, stage) {
       map.scale.y = Math.max(map.scale.x, map.scale.y);
     }
   }
+ 
   Network.on("rotate left", function (id) {
     GameState.getPlayer(id).rotateLeft();
   });
@@ -149,7 +151,10 @@ export function init(renderer, stage) {
   GameState.ships.click = function (event) {
     if (targeting && event.target.team != GameState.player.team) {
       GameState.player.fireAt(event.target);
-      Network.send("fire at", {id:Network.id, target:event.target.id});
+      Network.send("fire at", {
+        id: Network.id,
+        target: event.target.id
+      });
       targeting = false;
     }
     event.stopPropagation();
@@ -193,7 +198,7 @@ Network.on("strafe right", function (id) {
   GameState.getPlayer(id).strafeRight();
 });
 export function update(renderer, stage) {
-  if(!active)return;
+  if (!active) return;
   var map = GameState.map;
   if (renderer.plugins.interaction.eventData.data) {
     let mouseLocation = renderer.plugins.interaction.eventData.data.global;
@@ -215,6 +220,11 @@ export function update(renderer, stage) {
     if (mouseLocation.y > window.innerHeight - Settings.BORDER) {
       map.y -= map.scale.y * Time.deltaTime * Settings.SCROLLSPEED;
     }
+  }
+  if(keySpace.isDown){
+    var player = GameState.player;
+    map.x = window.innerWidth / 2 - player.x * map.scale.x;
+    map.y = window.innerHeight / 2 - player.y * map.scale.y;
   }
   map.parent.cursor = targeting ? "crosshair" : "default";
   if (keyW.isDown) {

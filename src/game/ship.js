@@ -3,13 +3,11 @@ import * as MathUtils from "utils/mathutils.js";
 import * as Time from "utils/time.js";
 import * as GameState from "game/gamestate.js";
 import * as Network from "net/network.js";
-import {
-  HealthBar
-} from "game/healthbar.js"
+import HealthBar from "game/healthbar.js"
 
 
 
-export class Ship extends PIXI.Container {
+export default class Ship extends PIXI.Container {
   constructor(texture) {
     super();
     this.id = MathUtils.generateId();

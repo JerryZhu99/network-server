@@ -9,7 +9,7 @@ app.controller("lobbyController", function($scope, $location){
             game.show();
             $location.path("game");
         }else{
-            game.start("test");
+            game.start("raid");
             $location.path("game");
         }
     }
