@@ -15,17 +15,22 @@ import "app/main.js";
 export var network = Network;
 export var gamestate = GameState;
 export var started = false;
-var finished = false;
+export var finished = false;
+var finishedState = false;
+var start;
 var finish;
 
 Network.on("game start", function (name) {
   loadScenario(name);
 });
-export function start(name) {
+export function startGame(name) {
   if (Network.isServer) {
     loadScenario(name);
     Network.send("game start", name);
   }
+}
+export function onStart(callback){
+  start = callback;
 }
 export function onFinish(callback) {
   finish = callback;
@@ -33,7 +38,9 @@ export function onFinish(callback) {
 export function loadScenario(name) {
   GameState.loadScenario(name);
   started = true;
+  finishedState = false;
   finished = false;
+  if(start)start();
   show();
   requestAnimationFrame(update);
 }
@@ -91,12 +98,15 @@ function update() {
   GameUI.update();
 
   GameState.update();
-  if (Network.isServer) {
-    var finishState = GameState.checkFinished(finish);
-    if(finishState)setTimeout(function () {
-      finished = finishState;
-      Network.send("finish", finished);
-    }, 3000);
+  if (Network.isServer && !finishedState) {
+    var currentState = GameState.checkFinished(finish);
+    if (currentState) {
+      setTimeout(function () {
+        finished = currentState;
+        Network.send("finish", finished);
+      }, 3000);
+    }
+    finishedState = currentState;
   }
   if (finished) {
     started = false;
@@ -106,6 +116,8 @@ function update() {
   }
   renderer.render(stage);
 }
-Network.on("finish", function(finishState){
-    finished = finishState;
+Network.on("finish", function (finishState) {
+  finished = finishState;
+  console.log(finishState);
+  console.log(finish);
 })

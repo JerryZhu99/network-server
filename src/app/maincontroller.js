@@ -1,7 +1,7 @@
 import {
     app
-} from "app/app.js";
-import * as Network from "net/network.js"
+} from "app/app";
+import * as Network from "net/network"
 
 app.controller("mainController", function ($scope, $http, $location, Auth) {
     game.hide();
@@ -10,9 +10,9 @@ app.controller("mainController", function ($scope, $http, $location, Auth) {
         var username = response.data.username;
         $scope.username = username;
         net.setName(username);
-        if(username){
+        if (username) {
             Auth.set(username);
-        }else{
+        } else {
             Auth.remove();
         }
     }).catch(function (response) {
@@ -26,11 +26,26 @@ app.controller("mainController", function ($scope, $http, $location, Auth) {
         $scope.players = players;
         $scope.$apply();
     });
-    Network.lobby(function(lobbies){
+    Network.lobby(function (lobbies) {
         $scope.lobbies = lobbies;
         $scope.$apply();
     });
-    console.log(Network.players);
+    game.onStart(function () {
+        if (Network.isServer) {
+            $location.path("game");
+        } else {
+            $scope.$apply(function () {
+                $location.path("game");
+            });
+        }
+    });
+    game.onFinish(function (result) {
+        console.log("Mission " + result + "!");
+        $scope.success = (result == 'success');
+        $scope.$apply(function () {
+            $location.path("outcome");
+        });
+    });
     $scope.isServer = function () {
         return Network.isServer;
     }
@@ -48,6 +63,7 @@ app.controller("mainController", function ($scope, $http, $location, Auth) {
     }
     $scope.createLobby = function (name) {
         $scope.lobbyName = name;
+        Network.setLobbyName(name);
         $location.path("/lobby");
     };
     $scope.makePublic = function () {

@@ -7,11 +7,6 @@ app.controller("gameController", function ($scope, $location) {
         $location.path("lobby");
     } else {
         game.show();
-        game.onFinish(function (result) {
-            console.log("Mission " + result + "!");
-            $scope.$apply(function () {
-                $location.path("lobby");
-            });
-        });
+
     }
 });

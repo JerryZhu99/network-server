@@ -46,6 +46,8 @@ app.get('*', function (req, res, next) {
   }
   next();
 });
+app.use(express.static('files'));
+
 var routes = [
   '/lobbies',
   '/lobby',
@@ -66,13 +68,6 @@ app.get(routes, function (req, res) {
 });
 app.get(publicRoutes, function (req, res) {
   res.sendFile(__dirname + '/files/index.html');
-});
-
-app.get('/files/*', function (req, res) {
-  res.sendFile(__dirname + req.url);
-});
-app.get('/images/*', function (req, res) {
-  res.sendFile(__dirname + "/files" + req.url);
 });
 
 app.post('/login', function (req, res, next) {

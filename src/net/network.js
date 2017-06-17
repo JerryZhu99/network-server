@@ -9,6 +9,7 @@ var onLobby;
 
 var socket;
 var playerName = "Guest";
+var lobbyName = "Lobby";
 export var handlers = [];
 export var isPublic;
 export var lobbies = [];
@@ -100,8 +101,15 @@ export function setName(name){
     playerName = name;
     if(players[id])players[id].name = name;
 }
+export function setLobbyName(name){
+    lobbyName = name;
+}
 export function makePublic() {
-    socket.emit("peer id", this);
+    socket.emit("peer id", {
+        id:id,
+        name:lobbyName,
+        user:playerName
+    });
     isPublic = true;
 }
 export function connect(playerId) {

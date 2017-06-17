@@ -12,27 +12,30 @@ import "app/registercontroller.js";
 app.config(function ($routeProvider, $locationProvider) {
   $routeProvider.when('/', {
       controller: 'homeController',
-      templateUrl: 'files/views/home.html',
+      templateUrl: 'views/home.html',
     })
     .when('/lobbies', {
       controller: 'lobbiesController',
-      templateUrl: 'files/views/lobbies.html',
+      templateUrl: 'views/lobbies.html',
     })
     .when('/lobby', {
       controller: 'lobbyController',
-      templateUrl: 'files/views/lobby.html',
+      templateUrl: 'views/lobby.html',
     })
     .when('/game', {
       controller: 'gameController',
-      templateUrl: 'files/views/game.html',
+      templateUrl: 'views/game.html',
+    })   
+    .when('/outcome', {
+      templateUrl: 'views/outcome.html',
     })
     .when('/login', {
       controller: 'loginController',
-      templateUrl: 'files/views/login.html',
+      templateUrl: 'views/login.html',
     })
     .when('/register', {
       controller: 'registerController',
-      templateUrl: 'files/views/register.html',
+      templateUrl: 'views/register.html',
     })
     .otherwise({
       redirectTo: '/'

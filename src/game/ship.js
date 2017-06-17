@@ -141,12 +141,10 @@ export default class Ship extends PIXI.Container {
     this.y += this.velocity * Math.sin(this.angle) * Time.deltaTime;
   }
   fireAt(target) {
-    this.stopCruise();
     this.target = target;
     this.firing = true;
   }
   fireAtNearest() {
-    this.stopCruise();
     this.target = null;
     this.firing = true;
   }
