@@ -1,5 +1,5 @@
-import Weapon from "game/weapon.js";
-import * as Projectiles from "game/data/projectiles.js";
+import Weapon from "game/weapon";
+import * as Projectiles from "game/data/projectiles";
 
 export class Rockets extends Weapon{
     constructor(parent){

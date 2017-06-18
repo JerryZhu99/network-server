@@ -1,6 +1,4 @@
-import {
-    app
-} from "app/app";
+import app from "app/app";
 import * as Network from "net/network"
 
 app.controller("mainController", function ($scope, $http, $location, Auth) {

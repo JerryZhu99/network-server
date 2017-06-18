@@ -1,13 +1,11 @@
-import {
-  app
-} from "app/app.js";
-import "app/maincontroller.js";
-import "app/homecontroller.js";
-import "app/lobbycontroller.js";
-import "app/lobbiescontroller.js";
-import "app/gamecontroller.js";
-import "app/logincontroller.js";
-import "app/registercontroller.js";
+import app from "app/app";
+import "app/maincontroller";
+import "app/homecontroller";
+import "app/lobbycontroller";
+import "app/lobbiescontroller";
+import "app/gamecontroller";
+import "app/logincontroller";
+import "app/registercontroller";
 
 app.config(function ($routeProvider, $locationProvider) {
   $routeProvider.when('/', {

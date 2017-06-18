@@ -20,11 +20,10 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
     }
 }
 var mongoose;
-var db = null,
-    dbDetails = new Object();
+var dbDetails = new Object();
 mongoose = require('mongoose');
 mongoose.connect(mongoURL);
-db = mongoose.connection;
+var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
     dbDetails.databaseName = db.name;
@@ -32,29 +31,7 @@ db.once('open', function () {
     dbDetails.type = 'MongoDB';
     console.log('Connected to MongoDB at: %s', mongoURL);
 });
-var initDb = function (callback) {
-    if (mongoURL == null) return;
+function connect(){
     mongoose.connect(mongoURL);
-
-    /*  var mongodb = require('mongodb');
-      if (mongodb == null) return;
-
-      mongodb.connect(mongoURL, function(err, conn) {
-        if (err) {
-          callback(err);
-          return;
-        }
-
-        db = conn;
-        dbDetails.databaseName = db.databaseName;
-        dbDetails.url = mongoURLLabel;
-        dbDetails.type = 'MongoDB';
-
-        console.log('Connected to MongoDB at: %s', mongoURL);
-      });*/
-};
-module.exports = {
-    mongoose: mongoose,
-    db: db,
-    initDb: initDb,
-};
+}
+module.exports = {connect:connect}

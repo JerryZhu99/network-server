@@ -1,14 +1,14 @@
-import _ from "lib/pixi.js";
-import * as MathUtils from "utils/mathutils.js";
-import * as Time from "utils/time.js";
-import * as Network from "net/network.js"
+import _ from "lib/pixi";
+import * as MathUtils from "utils/mathutils";
+import * as Time from "utils/time";
+import * as Network from "net/network"
 import {
     Ship
-} from "game/ship.js";
-import * as Ships from "game/data/ships.js";
-import * as Weapons from "game/data/weapons.js";
+} from "game/ship";
+import * as Ships from "game/data/ships";
+import * as Weapons from "game/data/weapons";
 
-import * as Scenarios from "game/data/scenarios.js";
+import * as Scenarios from "game/data/scenarios";
 
 export var map;
 export var ships;

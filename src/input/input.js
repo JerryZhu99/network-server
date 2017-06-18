@@ -1,11 +1,11 @@
-import * as Settings from "utils/settings.js";
-import * as Time from "utils/time.js";
-import * as GameState from "game/gamestate.js";
-import * as Keyboard from "input/keyboard.js";
-import * as Network from "net/network.js";
+import * as Settings from "utils/settings";
+import * as Time from "utils/time";
+import * as GameState from "game/gamestate";
+import * as Keyboard from "input/keyboard";
+import * as Network from "net/network";
 import {
   Ship
-} from "game/ship.js";
+} from "game/ship";
 
 var keyW = Keyboard.key(Keyboard.keyCode("W"));
 var keyA = Keyboard.key(Keyboard.keyCode("A"));

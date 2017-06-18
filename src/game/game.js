@@ -1,16 +1,16 @@
-import * as PIXI from "lib/pixi.js";
-import * as Time from "utils/time.js";
-import * as Keyboard from "input/keyboard.js";
-import * as Settings from "utils/settings.js"
-import * as Input from "input/input.js";
-import * as Network from "net/network.js";
-import * as MathUtils from "utils/mathutils.js";
-import * as GameState from "game/gamestate.js";
-import * as Weapons from "game/data/weapons.js";
-import * as Ships from "game/data/ships.js";
-import * as Projectiles from "game/data/projectiles.js";
-import * as GameUI from "ui/gameui.js";
-import "app/main.js";
+import * as PIXI from "lib/pixi";
+import * as Time from "utils/time";
+import * as Keyboard from "input/keyboard";
+import * as Settings from "utils/settings"
+import * as Input from "input/input";
+import * as Network from "net/network";
+import * as MathUtils from "utils/mathutils";
+import * as GameState from "game/gamestate";
+import * as Weapons from "game/data/weapons";
+import * as Ships from "game/data/ships";
+import * as Projectiles from "game/data/projectiles";
+import * as GameUI from "ui/gameui";
+import "app/main";
 
 export var network = Network;
 export var gamestate = GameState;

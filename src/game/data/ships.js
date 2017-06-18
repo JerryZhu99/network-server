@@ -1,4 +1,4 @@
-import Ship from "game/ship.js";
+import Ship from "game/ship";
 
 var resources;
 export function load(loader) {

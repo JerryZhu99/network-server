@@ -15,9 +15,10 @@ var LocalStrategy = require('passport-local').Strategy;
 var ExpressPeerServer = require('peer').ExpressPeerServer;
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-var MongoDB = require('./server/mongodb.js');
-var db = MongoDB.db;
-var User = require('./server/user.js');
+var mongoose = require('mongoose');
+var MongoDB = require('./server/mongodb');
+var User = require('./server/user');
+var db = mongoose.connection;
 //app.use(morgan('combined'))
 app.use(bodyParser.urlencoded({
   extended: true
@@ -42,7 +43,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.get('*', function (req, res, next) {
   if (!db) {
-    MongoDB.initDb(function (err) {});
+    MongoDB.connect(function (err) {});
   }
   next();
 });

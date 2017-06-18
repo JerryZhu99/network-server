@@ -1,9 +1,9 @@
-import * as PIXI from "lib/pixi.js";
-import * as MathUtils from "utils/mathutils.js";
-import * as Time from "utils/time.js";
-import * as GameState from "game/gamestate.js";
-import * as Network from "net/network.js";
-import HealthBar from "game/healthbar.js"
+import * as PIXI from "lib/pixi";
+import * as MathUtils from "utils/mathutils";
+import * as Time from "utils/time";
+import * as GameState from "game/gamestate";
+import * as Network from "net/network";
+import HealthBar from "game/healthbar"
 
 
 

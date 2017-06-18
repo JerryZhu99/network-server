@@ -1,7 +1,7 @@
-import * as Ships from "game/data/ships.js";
-import * as Weapons from "game/data/weapons.js";
-import * as GameState from "game/gamestate.js";
-import * as Network from "net/network.js";
+import * as Ships from "game/data/ships";
+import * as Weapons from "game/data/weapons";
+import * as GameState from "game/gamestate";
+import * as Network from "net/network";
 
 class Scenario {
     constructor(){};

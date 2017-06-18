@@ -1,4 +1,4 @@
-import * as PIXI from "lib/pixi.js";
+import * as PIXI from "lib/pixi";
 
 export function dist(a, b) {
   return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));

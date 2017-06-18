@@ -1,4 +1,4 @@
-import {app} from "app/app.js";
+import app from "app/app";
 
 app.controller("registerController", function($scope, $location, $http){
 
