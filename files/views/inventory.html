@@ -1,0 +1,50 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>Inventory</h1>
+            <button class="btn btn-success" ng-click="startGame()" ng-show="isServer()">Start</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 col-md-offset-1">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2>Ship</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2>Primary</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2>Shield</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <h2>Modules</h2>
+        </div>
+        <div class="col-md-2">
+            <h2>Fighters</h2>
+        </div>
+        <div class="col-md-2">
+            <h2>Weapons</h2>
+            <div class="list-group">
+                <a href="#" class="list-group-item" ng-class="{active:selected==$index}" ng-click="selectWeapon($index)" ng-repeat="weapon in equippedWeapons track by $index">
+                    {{weapon?weapon.itemName:'Empty'}}
+                    <button class="btn btn-danger pull-right list-button" ng-show="weapon&&selected==$index" ng-click="unequipWeapon($index)">Unequip</button>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="list-group">
+                <a href="#" class="list-group-item" ng-click="equip($index)" ng-repeat="item in collection track by $index">
+                <span class="badge">{{item.amount}}</span>
+                    {{item.itemName}}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

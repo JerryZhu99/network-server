@@ -54,6 +54,7 @@ var routes = [
   '/lobby',
   '/game',
   '/outcome',
+  '/inventory'
 ];
 var publicRoutes = [
   '',

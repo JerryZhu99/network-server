@@ -45,7 +45,8 @@ export function init() {
         console.log('My peer ID is: ' + id);
         players.push({
             id: id,
-            name: playerName
+            name: playerName,
+            shipData: {}
         });
         if (onPlayer) {
             onPlayer(players);
@@ -66,12 +67,13 @@ export function init() {
     addHandler("join game", function (playerInfo) {
         players.push({
             id: playerInfo.id,
-            name: playerInfo.name
+            name: playerInfo.name,
+            shipData: {}
         });
         players.sort();
         console.log("player joined");
 
-        send("player list", players.map((p) => ({id:p.id, name:p.name})));
+        send("player list", players.map((p) => ({id:p.id, name:p.name, shipData:p.shipData})));
 
         console.log(handlers);
 
@@ -83,7 +85,8 @@ export function init() {
     addHandler("player list", function (allplayers) {
         players = allplayers.map((p) => ({
             id: p.id,
-            name: p.name
+            name: p.name,
+            shipData: p.shipData
         }));
         if (onPlayer) onPlayer(players);
     });

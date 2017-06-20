@@ -59,13 +59,11 @@ export class RaidScenario extends Scenario {
         var length = Network.players.length
         for(var i = 0; i < length; i++) {
             var playerObj = Network.players[i];
-            var ship = new Ships.Battleship();
+            var ship = Ships.loadShip(Network.players[i].shipData);
             ship.team = "friendly";
             ship.x = 0 + Math.cos(i/length*2*Math.PI)*200;
             ship.y = 1000 + Math.sin(i/length*2*Math.PI)*200;
             ship.angle = (i/length*2*Math.PI);
-            ship.weapons.push(new Weapons.Rockets(ship));
-            ship.weapons.push(new Weapons.MachineGun(ship));
             GameState.ships.addChild(ship);
             playerObj.ship = ship;
             ship.id = playerObj.id;

@@ -5,6 +5,7 @@ import * as Settings from "utils/settings"
 import * as Input from "input/input";
 import * as Network from "net/network";
 import * as MathUtils from "utils/mathutils";
+import * as Inventory from "game/inventory";
 import * as GameState from "game/gamestate";
 import * as Weapons from "game/data/weapons";
 import * as Ships from "game/data/ships";
@@ -88,7 +89,7 @@ function setup() {
   GameState.init(stage);
   GameUI.init(stage);
   Input.init(renderer, stage);
-
+  Inventory.init();
 }
 
 function update() {

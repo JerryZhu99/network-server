@@ -4,6 +4,7 @@ import "app/homecontroller";
 import "app/lobbycontroller";
 import "app/lobbiescontroller";
 import "app/gamecontroller";
+import "app/inventorycontroller";
 import "app/logincontroller";
 import "app/registercontroller";
 
@@ -26,6 +27,10 @@ app.config(function ($routeProvider, $locationProvider) {
     })   
     .when('/outcome', {
       templateUrl: 'views/outcome.html',
+    })    
+    .when('/inventory', {
+      controller: 'inventoryController',
+      templateUrl: 'views/inventory.html',
     })
     .when('/login', {
       controller: 'loginController',
