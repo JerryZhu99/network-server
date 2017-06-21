@@ -18,8 +18,10 @@ export default class Weapon {
     }
 
     fireAtTarget(target) {
-        if (MathUtils.dist(this.parent, target) < this.range) {
+        if (this.inRange(target)) {
             this.fireAt(MathUtils.angle(this.parent, target));
+        }else{
+            this.fireAtNearest();
         }
     }
     fireAtTargetPredicted(target) {
@@ -92,13 +94,15 @@ export default class Weapon {
                 dist = currentdist;
             }
         }, this);
-        if (nearest) {
+        if (nearest && this.inRange(nearest)) {
             this.fireAtTargetPredicted(nearest);
         } else {
             return;
         }
     }
-
+    inRange(target){
+        return (MathUtils.dist(this.parent, target) < this.range);
+    }
     update(target, firing) {
         this.currentTime = Math.max(0, this.currentTime - Time.deltaTime);
         if (this.currentTime == 0) {

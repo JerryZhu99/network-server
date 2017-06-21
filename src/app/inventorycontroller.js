@@ -1,6 +1,7 @@
 import app from "app/app";
 import * as Weapons from "game/data/weapons";
 import * as Inventory from "game/inventory";
+import * as Ships from "game/data/ships";
 
 app.controller("inventoryController", function ($scope, $location, $http) {
     $scope.startGame = function () {
@@ -12,15 +13,22 @@ app.controller("inventoryController", function ($scope, $location, $http) {
         }
     }
 
-    $scope.equippedWeapons = [];
-    var maxWeapons = 5;
-    for (var i in Inventory.shipData.weapons) {
-        var weapon = Weapons.constructors[Inventory.shipData.weapons[i]];
-        $scope.equippedWeapons.push(weapon);
+    $scope.ownedShips = Inventory.ownedShips;
+    $scope.ship = Ships.constructors[Inventory.shipData().ship];
+    $scope.useShip = function (index) {
+        var ship = $scope.ownedShips[index];
+        Inventory.useShip(index);
+        $scope.ship = Ships.constructors[Inventory.shipData().ship];
+        $scope.equippedWeapons = [];
+        for (var i in Inventory.shipData().weapons) {
+            var weapon = Weapons.constructors[Inventory.shipData().weapons[i]];
+            $scope.equippedWeapons.push(weapon);
+        }
+        for (var i = 0; i < $scope.ship.maxWeapons; i++) {
+            if (!$scope.equippedWeapons[i]) $scope.equippedWeapons[i] = null;
+        }
     }
-    for (var i = 0; i < maxWeapons; i++) {
-        if (!$scope.equippedWeapons[i]) $scope.equippedWeapons[i] = null;
-    }
+    $scope.useShip(Inventory.currentShip);
     $scope.weapons = [];
     for (var i in Weapons.constructors) {
         $scope.weapons.push({
@@ -44,7 +52,7 @@ app.controller("inventoryController", function ($scope, $location, $http) {
         if (weapon != null) {
             $scope.collection.find((i) => (i.itemName = weapon.itemName)).amount++;
             $scope.equippedWeapons[index] = null;
-            var weapons = Inventory.shipData.weapons;
+            var weapons = Inventory.shipData().weapons;
             weapons.splice(weapons.indexOf(weapon.name), 1);
             Inventory.sync();
         }
@@ -54,7 +62,7 @@ app.controller("inventoryController", function ($scope, $location, $http) {
         if (itemObject.amount > 0) {
             itemObject.amount--;
             var weapon = $scope.equippedWeapons[$scope.selected];
-            var weapons = Inventory.shipData.weapons;
+            var weapons = Inventory.shipData().weapons;
             if (weapon) {
                 $scope.collection.find((i) => (i.itemName == weapon.itemName)).amount++;
                 weapons.splice(weapons.indexOf(weapon.name), 1);
@@ -62,8 +70,6 @@ app.controller("inventoryController", function ($scope, $location, $http) {
             $scope.equippedWeapons[$scope.selected] = itemObject.item;
             weapons.push(itemObject.item.name);
             Inventory.sync();
-            console.log(Inventory.shipData);
-            console.log($scope.equippedWeapons);
         }
 
     }

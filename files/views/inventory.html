@@ -10,6 +10,14 @@
             <div class="row">
                 <div class="col-xs-12">
                     <h2>Ship</h2>
+                    <div class="btn-group" uib-dropdown>
+                        <button type="button" class="btn btn-default btn-lg" uib-dropdown-toggle>
+                            {{ship.shipName}} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" uib-dropdown-menu>
+                            <li ng-repeat="shipObj in ownedShips track by $index"><a href="#" ng-click="useShip($index)">{{shipObj.ship}}</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="row">

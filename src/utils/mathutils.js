@@ -3,8 +3,11 @@ import * as PIXI from "lib/pixi";
 export function dist(a, b) {
   return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
-export function angle(from, to){
+export function angle(from, to) {
   return Math.atan2(to.y - from.y, to.x - from.x);
+}
+export function randomBetween(a, b) {
+  return Math.random() * (b - a) + a
 }
 /**
  * 
