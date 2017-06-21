@@ -14,45 +14,6 @@ class Scenario {
     }
 }
 
-export class TestScenario extends Scenario {
-    load() {
-        super.load();
-        for(var player in Network.players) {
-            var playerObj = Network.players[player];
-            var ship = new Ships.Battleship();
-            ship.team = "friendly";
-            ship.weapons.push(new Weapons.Rockets(ship));
-            GameState.ships.addChild(ship);
-            playerObj.ship = ship;
-            ship.id = playerObj.id;
-        }
-        console.log(Network.players);
-
-        GameState.setPlayer(Network.id);
-
-        var e1 = new Ships.Battleship();
-        e1.x = 1000;
-        e1.y = 1000;
-        e1.team = "enemy";
-        GameState.ships.addChild(e1);
-        e1.id = "e1";
-
-        var e2 = new Ships.Battleship();
-        e2.x = 1500;
-        e2.y = 1000;
-        e2.team = "enemy";
-        GameState.ships.addChild(e2);
-        e2.id = "e2";
-
-
-        var e3 = new Ships.Battleship();
-        e3.x = 2000;
-        e3.y = 1000;
-        e3.team = "enemy";
-        GameState.ships.addChild(e3);
-        e3.id = "e3";
-    }
-}
 export class RaidScenario extends Scenario {
     load() {
         super.load();
@@ -74,18 +35,25 @@ export class RaidScenario extends Scenario {
 
         var enemies = 5;
         for(var i = 0; i < enemies; i++) {
-            var enemy = new Ships.Battleship();
+            var enemy = Ships.loadShip({
+                ship: "Battleship",
+                weapons:[
+                    "Rockets",
+                    "MachineGun"
+                ]
+            });
             enemy.x = 2000 + Math.cos(i/enemies*2*Math.PI) * 500;
             enemy.y = -2000 + Math.sin(i/enemies*2*Math.PI) * 500;
             enemy.angle = -Math.PI/2;
             enemy.velocity = 50;
             enemy.firing = true;
             enemy.team = "enemy";
-            enemy.weapons.push(new Weapons.Rockets(enemy));
             GameState.ships.addChild(enemy);
             enemy.id = "enemy"+i;
         }
-        var transport = new Ships.Frigate();
+        var transport = Ships.loadShip({
+            ship:"Frigate"
+        });
         transport.x = 2000
         transport.y = -2000
         transport.angle = -Math.PI/2;
@@ -105,5 +73,4 @@ export class RaidScenario extends Scenario {
     }
 }
 export var scenarios = [];
-scenarios["test"] = new TestScenario();
 scenarios["raid"] = new RaidScenario();

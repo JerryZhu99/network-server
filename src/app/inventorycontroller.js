@@ -14,11 +14,11 @@ app.controller("inventoryController", function ($scope, $location, $http) {
     }
 
     $scope.ownedShips = Inventory.ownedShips;
-    $scope.ship = Ships.constructors[Inventory.shipData().ship];
+    $scope.ship = Ships.ships[Inventory.shipData().ship];
     $scope.useShip = function (index) {
         var ship = $scope.ownedShips[index];
         Inventory.useShip(index);
-        $scope.ship = Ships.constructors[Inventory.shipData().ship];
+        $scope.ship = Ships.ships[Inventory.shipData().ship];
         $scope.equippedWeapons = [];
         for (var i in Inventory.shipData().weapons) {
             var weapon = Weapons.constructors[Inventory.shipData().weapons[i]];

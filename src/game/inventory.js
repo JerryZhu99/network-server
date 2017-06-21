@@ -25,7 +25,7 @@ export function init() {
     })
 }
 export function sync() {
-    var player = Network.players.find((p) => (p.id == Network.id));
+    let player = Network.players.find((p) => (p.id == Network.id));
     console.log(Network);
     player.shipData = ownedShips[currentShip];
     Network.send("ship inventory", {

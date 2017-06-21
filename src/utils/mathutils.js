@@ -6,7 +6,7 @@ export function dist(a, b) {
 export function angle(from, to) {
   return Math.atan2(to.y - from.y, to.x - from.x);
 }
-export function randomBetween(a, b) {
+export function randomBetween(a = 0, b = 1) {
   return Math.random() * (b - a) + a
 }
 /**
