@@ -20,7 +20,7 @@ export function shipData(index = currentShip) {
 
 export function init() {
     Network.on("ship inventory", function (data) {
-        var player = Network.players[data.id];
+        var player = Network.players.find((p) => (p.id == data.id));
         player.shipData = data.ship;
     })
 }

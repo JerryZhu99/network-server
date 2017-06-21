@@ -18,11 +18,7 @@ export default class Weapon {
     }
 
     fireAtTarget(target) {
-        if (this.inRange(target)) {
-            this.fireAt(MathUtils.angle(this.parent, target));
-        }else{
-            this.fireAtNearest();
-        }
+        this.fireAt(MathUtils.angle(this.parent, target));
     }
     fireAtTargetPredicted(target) {
         var vx = target.velocity * Math.cos(target.angle - Math.PI / 2);
@@ -107,7 +103,7 @@ export default class Weapon {
         this.currentTime = Math.max(0, this.currentTime - Time.deltaTime);
         if (this.currentTime == 0) {
             if (firing) {
-                if (target && target.alive) {
+                if (target && target.alive && this.inRange(target)) {
                     this.fireAtTargetPredicted(target);
                 } else {
                     this.fireAtNearest();
